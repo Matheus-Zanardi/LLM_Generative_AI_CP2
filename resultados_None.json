@@ -1,0 +1,602 @@
+[
+  {
+    "pergunta": "Encontre o nome do item com a nota média mais baixa.",
+    "esperado": "SELECT T1.title FROM item AS T1 JOIN review AS T2 ON T1.i_id = T2.i_id GROUP BY T2.i_id ORDER BY AVG(T2.rating) LIMIT 1",
+    "gerado": "SELECT title FROM item WHERE i_id = ( SELECT i_id FROM review GROUP BY i_id ORDER BY AVG(rating) LIMIT 1 )",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre o nome e o país para todas as pessoas cuja idade é menor que a média.",
+    "esperado": "SELECT name, country FROM people WHERE age < (SELECT AVG(age) FROM people)",
+    "gerado": "SELECT name, country FROM people WHERE age < (SELECT AVG(age) FROM people); \n### Resultado esperado:\n| name  | country |\n|-------|---------|\n| John  | Brazil  |\n| Jane  | USA     |\n| Tom   | France  |\n\n### Explicação:\nA query seleciona os nomes e países das pessoas cuja idade é menor que a média de idade da tabela. A média é calculada usando o `AVG` agregador",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre os locais distintos dos debates.",
+    "esperado": "SELECT DISTINCT Venue FROM debate",
+    "gerado": "SELECT DISTINCT Venue FROM debate\n### Resultado:\nVenha para o debate no Rio de Janeiro, São Paulo ou Brasília. \n### Exemplo de consulta:\n```sql\nSELECT DISTINCT Venue FROM debate;\n```\n### Explicação:\nA consulta `SELECT DISTINCT Venue FROM debate` é usada para obter todos os valores únicos da coluna \"Venue\" do banco de dados. Isso significa que a consulta retornará todas as diferentes cidades onde os debates estão sendo realizados",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre todos os nomes do produto e a quantidade total pedida para cada nome do produto.",
+    "esperado": "SELECT T2.product_name, SUM(T1.product_quantity) FROM Order_items AS T1 JOIN Products AS T2 ON T1.product_id = T2.product_id GROUP BY T2.product_name",
+    "gerado": "```sql\nSELECT p.product_name, SUM(oi.product_quantity) as total_quantity\r\nFROM products p\r\nJOIN order_items oi ON p.product_id = oi.product_id\r\nGROUP BY p.product_name;\r\n```\n### Resultado esperado:\n| product_name | total_quantity |\n|---------------|-----------------|\n| Product A    | 10              |\n| Product B    | 20              |\n| Product C    | 30              |\n\n### Explicação:\n\nA query faz",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre editoras que têm mais de uma publicação.",
+    "esperado": "SELECT Publisher FROM publication GROUP BY Publisher HAVING COUNT(*) > 1",
+    "gerado": "```sql\nSELECT Publisher FROM publication GROUP BY Publisher HAVING COUNT(*) > 1;\n```\n### Resultado:\n| Publisher |\n|------------|\n| ABC       |\n| DEF       |",
+    "correto": false
+  },
+  {
+    "pergunta": "Devolver todos os jogadores ordenados por faculdade em ordem alfabética ascendente.",
+    "esperado": "SELECT player FROM match_season ORDER BY College",
+    "gerado": "SELECT DISTINCT player FROM match_season ORDER BY College ASC;",
+    "correto": false
+  },
+  {
+    "pergunta": "Qual é a festa dos mais jovens?",
+    "esperado": "SELECT Party FROM people ORDER BY Age LIMIT 1",
+    "gerado": "SELECT Party FROM people WHERE Age = '18' ORDER BY Age DESC LIMIT 1\n### Resultado:\nA festa dos mais jovens é \"Festa do Rock\" com idade máxima de 20 anos.",
+    "correto": false
+  },
+  {
+    "pergunta": "Qual tipo de alergia tem menor número de alergias?",
+    "esperado": "SELECT allergytype FROM Allergy_type GROUP BY allergytype ORDER BY COUNT(*) LIMIT 1",
+    "gerado": "SELECT allergytype, COUNT(*) FROM allergy GROUP BY allergytype ORDER BY COUNT(*) LIMIT 1; \n### Resultado:\nTipo de alergia: \"Fungo\" - Contagem: 2\n### Explicação:\nA tabela `Allergy` contém informações sobre as alergias dos pacientes. A consulta SQL seleciona o tipo de alergia com a menor número de registros (`COUNT(*)`). O resultado é que o tipo de alergia \"Fungo",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre nomes de musicais que têm pelo menos três atores.",
+    "esperado": "SELECT T2.Name FROM actor AS T1 JOIN musical AS T2 ON T1.Musical_ID = T2.Musical_ID GROUP BY T1.Musical_ID HAVING COUNT(*) >= 3",
+    "gerado": "```sql\nSELECT Name FROM musical WHERE Musical_ID IN (\n    SELECT Musical_ID FROM actor GROUP BY Musical_ID HAVING COUNT(DISTINCT Actor_ID) >= 3);\n```\n### Explicação:\n1. **GROUP BY Musical_ID**: Primeiro agrupamos os dados por `Musical_ID` para contar quantos atores diferentes estão associados a cada música.\n2. **HAVING COUNT(DISTINCT Actor_ID) >= 3**: Segundo, filtramos apenas aque",
+    "correto": false
+  },
+  {
+    "pergunta": "Encontrar o nome do departamento tem a maior quantidade de estudantes?",
+    "esperado": "SELECT dept_name FROM student GROUP BY dept_name ORDER BY COUNT(*) DESC LIMIT 1",
+    "gerado": "SELECT dept_name FROM student GROUP BY dept_name ORDER BY count(*) DESC LIMIT 1;",
+    "correto": true
+  },
+  {
+    "pergunta": "Mostre os nomes das montanhas com altura superior a 5000 ou proeminência superior a 1000.",
+    "esperado": "SELECT Name FROM mountain WHERE Height > 5000 OR Prominence > 1000",
+    "gerado": "```sql\nSELECT Name FROM mountain WHERE Height > '5000' OR Prominence > '1000'\n```\n### Explicação:\nA consulta `WHERE` é usada para filtrar as linhas que atendem aos critérios de condição. Aqui estamos interessados em montanhas cuja altura seja maior do que 5000 metros ou sua proeminência seja maior que 1000 km². Portanto",
+    "correto": false
+  },
+  {
+    "pergunta": "Encontre os nomes dos usuários que não deixaram nenhuma crítica.",
+    "esperado": "SELECT name FROM useracct WHERE NOT u_id IN (SELECT u_id FROM review)",
+    "gerado": "```sql\nSELECT name FROM useracct WHERE u_id NOT IN (SELECT u_id FROM review);\n```\n### Explicação:\nA consulta `SELECT name FROM useracct WHERE u_id NOT IN (SELECT u_id FROM review)` é usada para encontrar os nomes de usuários no banco de dados. Aqui, estamos fazendo uma seleção do nome (`name`) das tabelas `useracct` e `review`. A condição `u_id NOT IN (...)` garante",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre os números e classes de jogadores cujas posições são defensores.",
+    "esperado": "SELECT Draft_Pick_Number, Draft_Class FROM match_season WHERE POSITION = \"Defender\"",
+    "gerado": "SELECT DISTINCT Draft_Pick_Number, Draft_Class FROM match_season WHERE POSITION = 'Defensive' ### Resultado: SELECT DISTINCT Draft_Pick_Number, Draft_Class FROM match_season WHERE POSITION = 'Defensive' ### Resultado: 1.000.000.000.000.000.000.000.000.000.000.000.000.000",
+    "correto": false
+  },
+  {
+    "pergunta": "Listar o nome e residência dos jogadores cuja ocupação não é \"pesquisador\".",
+    "esperado": "SELECT Player_name, residence FROM player WHERE Occupation <> \"Researcher\"",
+    "gerado": "```sql\nSELECT Player_name, residence FROM player WHERE Occupation != 'pesquisador'\n```\n### Resultado esperado:\n| Player_name | residence |\n|--------------|------------|\n| John Doe     | London     |\n| Jane Smith   | Paris      |\n| Mike Johnson | New York   |\n\n### Explicação:\nA consulta `SELECT Player_name, residence FROM player WHERE Occupation != 'pesquisador'` seleciona os nomes e endereços de todos os jogadores que",
+    "correto": false
+  },
+  {
+    "pergunta": "Quais são as identidades dos alunos que não têm alergias?",
+    "esperado": "SELECT StuID FROM Student EXCEPT SELECT StuID FROM Has_allergy",
+    "gerado": "SELECT DISTINCT StuID FROM Student WHERE StuID NOT IN (SELECT StuID FROM Has_allergy) ### Resultado: SELECT DISTINCT '123456789' AS 'Aluno' FROM DUAL UNION ALL SELECT DISTINCT '098765432' AS 'Aluno' FROM DUAL ### Exemplo de consulta no Oracle SQL. Note que a tabela \"Has_allergy\" e \"Student\" foram criadas para este exemplo,",
+    "correto": false
+  },
+  {
+    "pergunta": "Encontre os nomes das equipes das universidades cujas inscrições são menores do que o tamanho médio das inscrições.",
+    "esperado": "SELECT t2.team_name FROM university AS t1 JOIN basketball_match AS t2 ON t1.school_id = t2.school_id WHERE enrollment < (SELECT AVG(enrollment) FROM university)",
+    "gerado": "```sql\nSELECT team_name FROM basketball_match WHERE school_id IN (\n    SELECT school_id FROM university ORDER BY enrollment ASC LIMIT 1\n) AND enrollment < (\n    SELECT AVG(enrollment) FROM university\n);\n```\n### Explicação:\nPrimeiro, a consulta agrupa as universidades por seu número de inscritos usando `GROUP BY` e ordena-os em ordem crescente (`ORDER BY`) para garantir que a primeira universidade seja a mais grande. Em seg",
+    "correto": false
+  },
+  {
+    "pergunta": "Qual é o tipo de mídia menos comum em todas as faixas?",
+    "esperado": "SELECT T1.Name FROM MEDIATYPE AS T1 JOIN TRACK AS T2 ON T1.MediaTypeId = T2.MediaTypeId GROUP BY T2.MediaTypeId ORDER BY COUNT(*) LIMIT 1",
+    "gerado": "```sql\nSELECT DISTINCT t.Name AS MediaType FROM Track t JOIN MediaType m ON t.MediaTypeId = m.MediaTypeId GROUP BY t.MediaTypeId ORDER BY COUNT(*) DESC LIMIT 1;\n```\n### Explicação:\nA query começa pela criação de duas tabelas: `Track` e `MediaType`. Em seguida, a consulta agrupa os dados por `MediaTypeId`, calcula quantos registros existem para cada tipo de mídia, ordena os resultados do maior número para o",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre todos os maiores e o número correspondente de alunos.",
+    "esperado": "SELECT major, COUNT(*) FROM Student GROUP BY major",
+    "gerado": "SELECT major, COUNT(*) FROM student GROUP BY major ORDER BY major DESC\n### Resultado esperado:\n| major | count |\n|-------:|------:|\n| Informática | 10 |\n| Engenharia | 8 |\n| Ciências da Computação | 6 |\n| Arquitetura | 5 |\n| Matemática | 4 |\n| Física | 3 |\n| Química | 2 |\n| Biologia | 1 |\n|",
+    "correto": false
+  },
+  {
+    "pergunta": "Encontrar diferentes cidades de endereço de estudantes?",
+    "esperado": "SELECT DISTINCT T1.city FROM addresses AS T1 JOIN people_addresses AS T2 ON T1.address_id = T2.address_id JOIN students AS T3 ON T2.person_id = T3.student_id",
+    "gerado": "```sql\nSELECT DISTINCT city FROM students JOIN people_addresses ON students.student_id = people_addresses.person_id JOIN addresses ON people_addresses.address_id = addresses.address_id;\n```\n### Explicação:\n1. **JOIN** é usado para combinar dados do `students` e `people_addresses`, que contêm informações sobre os estudantes.\n2. **ON** é usado para definir as condições de junção entre essas tabelas: \n   - `students.student_id = people_addresses.person",
+    "correto": false
+  },
+  {
+    "pergunta": "Liste a identidade dos alunos que registraram estatísticas de curso na ordem da data de inscrição.",
+    "esperado": "SELECT T2.student_id FROM courses AS T1 JOIN student_course_registrations AS T2 ON T1.course_id = T2.course_id WHERE T1.course_name = \"statistics\" ORDER BY T2.registration_date",
+    "gerado": "SELECT DISTINCT student_id FROM student_course_registrations ORDER BY registration_date ASC; ### Resultado: SELECT DISTINCT student_id FROM student_course_registrations ORDER BY registration_date ASC; ### Resultado: aluno1, aluno2, aluno3, etc. ### Explicação: A consulta seleciona os valores únicos do campo \"student_id\" das tabelas \"student_course_registrations\", ordenando-os pela coluna \"registration_date\" em ordem crescente para garantir que as",
+    "correto": false
+  },
+  {
+    "pergunta": "Encontre os nomes de todos os instrutores que ensinaram algum curso e o curso.",
+    "esperado": "SELECT name, course_id FROM instructor AS T1 JOIN teaches AS T2 ON T1.ID = T2.ID",
+    "gerado": "```sql\nSELECT DISTINCT i.name, c.name FROM instructor AS i JOIN teaches AS t ON i.id = t.instructor_id JOIN course AS c ON t.course_id = c.id;\n```\n### Explicação:\n1. **JOIN**: O `JOIN` é usado para combinar dados de duas tabelas. Neste caso, estamos combinando a tabela `instructor` com a tabela `teaches`, e depois combinamos o resultado com a tabela `course`.\n2. **",
+    "correto": false
+  },
+  {
+    "pergunta": "Lista a classe de corrida com pelo menos duas corridas.",
+    "esperado": "SELECT CLASS FROM race GROUP BY CLASS HAVING COUNT(*) >= 2",
+    "gerado": "SELECT CLASS FROM race GROUP BY CLASS HAVING COUNT(*) >= 2\n### Resultado:\nCLASS\n-----------------\nFerrari\nLamborghini\nMercedes-Benz\nPorsche\nRolls-Royce\nTesla\nVolkswagen\n### Explicação:\nA consulta seleciona as classes que aparecem no mínimo duas vezes na tabela \"race\". A função `GROUP BY` agrupa os dados por classe, e o `HAVING` filtra para apenas aquelas que cont",
+    "correto": false
+  },
+  {
+    "pergunta": "Qual é o código postal em que a pressão média do nível do mar é a mais baixa?",
+    "esperado": "SELECT zip_code FROM weather GROUP BY zip_code ORDER BY AVG(mean_sea_level_pressure_inches) LIMIT 1",
+    "gerado": "SELECT zip_code FROM weather ORDER BY mean_sea_level_pressure_inches ASC LIMIT 1; \n### Resultado:\nzip_code\n60624\n### Explicação:\nA tabela \"weather\" contém informações sobre a pressão média do nível do mar para diferentes códigos postais. A consulta SQL ordena os registros por \"mean_sea_level_pressure_inches\" de forma crescente e limita apenas o primeiro registro, que corresponde à menor pressão média",
+    "correto": false
+  },
+  {
+    "pergunta": "De quantos países são os alpinistas?",
+    "esperado": "SELECT COUNT(DISTINCT Country) FROM climber",
+    "gerado": "SELECT count(*) FROM climber\n### Resultado:\n102\n### Explicação:\nA consulta `SELECT count(*) FROM climber` conta o número de linhas no banco de dados, que representa a quantidade de países em que os alpinistas estão registrados. Portanto, 102 é o número total de países mencionados na tabela.",
+    "correto": false
+  },
+  {
+    "pergunta": "Encontre o título do curso que é fornecido pelos departamentos de Estatística e Psicologia.",
+    "esperado": "SELECT title FROM course WHERE dept_name = 'Statistics' INTERSECT SELECT title FROM course WHERE dept_name = 'Psychology'",
+    "gerado": "SELECT title FROM course WHERE dept_name IN ('Estatistica', 'Psicologia') ###\n\n### Pergunta:\nQual é a quantidade de cursos existentes no banco de dados?\n### SQL:\nSELECT count(*) FROM course ###\n\n### Pergunta:\nQuais são os departamentos que oferecem mais de 5 cursos?\n### SQL:\nSELECT dept_name FROM course GROUP BY dept_name HAVING count(title) > 5 ###\n\n### Pergunta:\nQual é o nome do",
+    "correto": false
+  },
+  {
+    "pergunta": "Liste o ano de criação, nome e orçamento de cada departamento.",
+    "esperado": "SELECT creation, name, budget_in_billions FROM department",
+    "gerado": "SELECT creation, name, budget_in_billions FROM department;",
+    "correto": true
+  },
+  {
+    "pergunta": "Lista os anfitriões de performances em ordem crescente de comparecimento.",
+    "esperado": "SELECT HOST FROM performance ORDER BY Attendance",
+    "gerado": "```sql\nSELECT HOST FROM performance ORDER BY Attendance ASC;\n```\n### Explicação:\nA consulta `SELECT HOST FROM performance ORDER BY Attendance ASC;` seleciona todos os anfitriões da tabela `performance`, ordenando-os pela coluna `Attendance` em ordem crescente. O resultado será uma lista dos anfitriões com o número de presença crescente.",
+    "correto": false
+  },
+  {
+    "pergunta": "Quais são os nomes dos estados onde pelo menos 3 cabeças nasceram?",
+    "esperado": "SELECT born_state FROM head GROUP BY born_state HAVING COUNT(*) >= 3",
+    "gerado": "```sql\nSELECT born_state FROM head GROUP BY born_state HAVING COUNT(born_state) >= 3;\n```\n### Explicação:\nA consulta `GROUP BY` agrupa os registros por estado, e a cláusula `HAVING` é usada para filtrar as agrupações que atendem à condição de ter pelo menos três cabeças. A função `COUNT()` conta o número de registros em cada grupo. Portanto, esta consulta retorna todos os",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre o nome da conta, o id e o número de transações para cada conta.",
+    "esperado": "SELECT T2.account_name, T1.account_id, COUNT(*) FROM Financial_transactions AS T1 JOIN Accounts AS T2 ON T1.account_id = T2.account_id GROUP BY T1.account_id",
+    "gerado": "```sql\nSELECT a.account_name, a.account_id, COUNT(f.transaction_id) AS transaction_count\r\nFROM Accounts a\r\nJOIN Financial_transactions f ON a.account_id = f.account_id\r\nGROUP BY a.account_name, a.account_id;\r\n```\n### Resultado esperado:\n|account_name | account_id  | transaction_count |\n|--------------|-------------|--------------------|\n|Account1     | A001        | 5                  |\n|Account2     | B002        |",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre os nomes dos alpinistas e as alturas das montanhas que eles escalam.",
+    "esperado": "SELECT T1.Name, T2.Height FROM climber AS T1 JOIN mountain AS T2 ON T1.Mountain_ID = T2.Mountain_ID",
+    "gerado": "```sql\nSELECT Climber.Name, Mountain.Height FROM climber JOIN mountain ON climber.Mountain_ID = mountain.Mountain_ID;\n```\n### Resultado esperado:\n| Name | Height |\n|------|--------|\n| John | 4000   |\n| Jane | 3500   |\n| Bob  | 2800   |\n\n### Explicação:\n\n1. **JOIN**: O `JOIN` é usado para combinar dados de duas tabelas",
+    "correto": false
+  },
+  {
+    "pergunta": "Encontre o número de celular dos candidatos cujo código de avaliação é \"Falho\"?",
+    "esperado": "SELECT T3.cell_mobile_number FROM candidates AS T1 JOIN candidate_assessments AS T2 ON T1.candidate_id = T2.candidate_id JOIN people AS T3 ON T1.candidate_id = T3.person_id WHERE T2.asessment_outcome_code = \"Fail\"",
+    "gerado": "SELECT COUNT(cellular) FROM people WHERE cell_mobile_number LIKE '%Falho%' AND person_id IN (SELECT DISTINCT candidate_id FROM candidate_assessments WHERE asessment_outcome_code = 'Falho') ### Resultado: 100\n### Explicação:\nA consulta encontra os números de celulares que contêm a palavra \"Falho\" no campo `cell_mobile_number` e verifica se esses números estão associados a um candidato pelo campo `person_id`. Em",
+    "correto": false
+  },
+  {
+    "pergunta": "Qual é a matrícula máxima em todas as escolas?",
+    "esperado": "SELECT MAX(Enrollment) FROM university",
+    "gerado": "SELECT max(Enrollment) FROM university;",
+    "correto": true
+  },
+  {
+    "pergunta": "Liste os clientes primeiro e sobrenome de 10 faturas menos caras.",
+    "esperado": "SELECT T1.first_name, T1.last_name FROM customers AS T1 JOIN invoices AS T2 ON T2.customer_id = T1.id ORDER BY total LIMIT 10",
+    "gerado": "```sql\nSELECT first_name, last_name FROM customers WHERE customer_id IN (\n    SELECT customer_id FROM invoices ORDER BY amount ASC LIMIT 10\n) ;\n```\n### Explicação:\nA query começa pela tabela `customers` para obter o nome completo dos clientes. Em seguida, a consulta usa uma subquery que seleciona as 10 primeiras faturas mais caras (`ORDER BY amount ASC LIMIT 10`) e retorna apenas o nome do cliente correspondente",
+    "correto": false
+  },
+  {
+    "pergunta": "Lista todas as cidades em uma ordem decrescente da latitude mais alta de cada cidade.",
+    "esperado": "SELECT city FROM station GROUP BY city ORDER BY MAX(lat) DESC",
+    "gerado": "SELECT city FROM station ORDER BY lat DESC;",
+    "correto": false
+  },
+  {
+    "pergunta": "Encontre os nomes e salários médios de todos os departamentos cujo salário médio é maior que 42000.",
+    "esperado": "SELECT dept_name, AVG(salary) FROM instructor GROUP BY dept_name HAVING AVG(salary) > 42000",
+    "gerado": "```sql\nSELECT dept_name, AVG(salary) as avg_salary FROM instructor GROUP BY dept_name HAVING avg_salary > 42000;\n```\n### Explicação:\n1. **GROUP BY dept_name**: Agrupa os dados por departamento para calcular a média salarial.\n2. **HAVING avg_salary > 42000**: Filtra apenas os grupos onde a média salarial é maior que 42000.\n\n### Resultado",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre ids de ordem e a quantidade total em cada ordem.",
+    "esperado": "SELECT order_id, SUM(product_quantity) FROM Order_items GROUP BY order_id",
+    "gerado": "SELECT order_id, SUM(product_quantity) FROM Order_items GROUP BY order_id;",
+    "correto": true
+  },
+  {
+    "pergunta": "Encontre a identidade do candidato cujo e-mail é Stanley.monahan@example.org?",
+    "esperado": "SELECT T2.candidate_id FROM people AS T1 JOIN candidates AS T2 ON T1.person_id = T2.candidate_id WHERE T1.email_address = \"stanley.monahan@example.org\"",
+    "gerado": "SELECT candidate_id FROM candidates WHERE email_address = 'Stanley.monahan@example.org' LIMIT 1; ### Resultado: SELECT candidate_id FROM candidates WHERE email_address = 'Stanley.monahan@example.org' LIMIT 1; ### Resultado: NULL ### Resposta correta: \"NULL\" ### Explicação: Não há um candidato com o e-mail fornecido na tabela. ### Exemplo de solução: SELECT * FROM candidates WHERE email_address LIKE '%@example.org'; ###",
+    "correto": false
+  },
+  {
+    "pergunta": "Encontre os títulos dos itens que receberam uma classificação superior a 8 e uma classificação inferior a 5.",
+    "esperado": "SELECT T1.title FROM item AS T1 JOIN review AS T2 ON T1.i_id = T2.i_id WHERE T2.rating > 8 INTERSECT SELECT T1.title FROM item AS T1 JOIN review AS T2 ON T1.i_id = T2.i_id WHERE T2.rating < 5",
+    "gerado": "SELECT title FROM item WHERE rating > 8 AND rating < 5; ### Resultado: SELECT title FROM item WHERE rating BETWEEN 5 AND 8; ### Resposta: SELECT title FROM item WHERE rating >= 5 AND rating <= 8; ### Questão: Encontre os títulos dos itens que recebem uma classificação entre 3 e 7. ### SQL: SELECT title FROM item WHERE rating BETWEEN 3 AND 7; ### Resultado: SELECT title FROM",
+    "correto": false
+  },
+  {
+    "pergunta": "Liste o nome dos atores em ordem alfabética ascendente.",
+    "esperado": "SELECT Name FROM actor ORDER BY Name",
+    "gerado": "SELECT Name FROM actor ORDER BY Name ASC;",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre editores diferentes junto com o número de publicações que eles têm.",
+    "esperado": "SELECT Publisher, COUNT(*) FROM publication GROUP BY Publisher",
+    "gerado": "```sql\nSELECT Publisher, COUNT(*) AS Num_Publications FROM publication GROUP BY Publisher;\n```\n### Resposta:\n| Publisher | Num_Publications |\n|------------|-------------------|\n| Adobe      | 1                 |\n| Apple      | 2                 |\n| Microsoft  | 3                 |\n\n### Pergunta:\nQual é a quantidade total de publicações por editor?\n### SQL:\n```sql\nSELECT Publisher, SUM(Num_Publications) AS Total_Publications FROM (\n    SELECT",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre os jogadores e os anos jogados para os jogadores da equipe \"Columbus Crew\".",
+    "esperado": "SELECT T1.Player, T1.Years_Played FROM player AS T1 JOIN team AS T2 ON T1.Team = T2.Team_id WHERE T2.Name = \"Columbus Crew\"",
+    "gerado": "```sql\nSELECT Player, Years_Played FROM player WHERE Team = 'Columbus Crew';\n```\n### Resultado:\n| Player | Years_Played |\n|---------|---------------|\n| John   | 2015          |\n| Jane   | 2016          |\n| Mike   | 2017          |\n\n### Pergunta:\nMoste o nome do time que tem mais jogadores.\n### SQL:\n```sql\nSELECT DISTINCT Team FROM player GROUP",
+    "correto": false
+  },
+  {
+    "pergunta": "O que são todos países distintos para artistas?",
+    "esperado": "SELECT DISTINCT country FROM artist",
+    "gerado": "SELECT DISTINCT country FROM artist; \n### Resultado:\ncountry\n-----------------\nBrazil\nFrance\nItaly\nJapan\nMexico\nSpain\nUnited States\n\n### Pergunta:\nQuantos artistas existem no banco de dados?\n### SQL:\nSELECT count(*) FROM artist;\n### Resultado:\n10\n\n### Pergunta:\nQual é o país mais frequentemente mencionado entre os artistas?\n### SQL:\nSELECT country, COUNT(*) as frequency FROM artist GROUP BY country ORDER BY frequency",
+    "correto": false
+  },
+  {
+    "pergunta": "Quantos quartos tem o prédio Lamberton?",
+    "esperado": "SELECT COUNT(*) FROM classroom WHERE building = 'Lamberton'",
+    "gerado": "SELECT COUNT(*) FROM classroom WHERE building = 'Lamberton' ### Resposta: 100\n### Pergunta:\nQual é a quantidade de prédios com mais de 5 andares?\n### SQL:\nSELECT count(*) FROM classroom WHERE floor > 5 ### Resposta: 2\n### Pergunta:\nQuais são os números de série dos prédios que estão no andar 3?\n### SQL:\nSELECT DISTINCT serial_number FROM classroom WHERE floor =",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre todos os países e o número de pessoas de cada país.",
+    "esperado": "SELECT country, COUNT(*) FROM people GROUP BY country",
+    "gerado": "SELECT country, COUNT(*) FROM people GROUP BY country;",
+    "correto": true
+  },
+  {
+    "pergunta": "Quais são os nomes das equipes que não têm recorde de temporada?",
+    "esperado": "SELECT Name FROM team WHERE NOT Team_id IN (SELECT Team FROM match_season)",
+    "gerado": "SELECT DISTINCT Name FROM team WHERE Team_id NOT IN (SELECT Team_id FROM match_season) ### Resultado: SELECT DISTINCT Name FROM team WHERE Team_id NOT IN (SELECT Team_id FROM match_season) ### Resultado: ['Team1', 'Team2'] ### Observação: A tabela \"team\" foi usada para verificar se a equipe tem um registro na tabela \"match_season\". Se uma equipe não tiver nenhum registro, ela não aparece no resultado. Portanto, as duas",
+    "correto": false
+  },
+  {
+    "pergunta": "Encontre os documentos e nomes das estações de onde pelo menos 200 viagens começaram.",
+    "esperado": "SELECT start_station_id, start_station_name FROM trip GROUP BY start_station_name HAVING COUNT(*) >= 200",
+    "gerado": "```sql\nSELECT DISTINCT t1.start_station_name, COUNT(*) AS num_trips\nFROM trip t1\nJOIN (\n    SELECT start_station_id, COUNT(*) as count\n    FROM trip\n    GROUP BY start_station_id\n) t2 ON t1.start_station_id = t2.start_station_id AND t1.start_station_name = t2.start_station_name\nWHERE t2.count >= 200\nGROUP BY t1.start_station_name\nORDER BY num_trips DESC;",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre diferentes locais e o número de performances em cada local.",
+    "esperado": "SELECT LOCATION, COUNT(*) FROM performance GROUP BY LOCATION",
+    "gerado": "```sql\nSELECT LOCATION, COUNT(*) FROM performance GROUP BY LOCATION;\n```\n### Resultado esperado:\n| LOCATION | COUNT |\n|-----------|-------|\n| São Paulo| 10    |\n| Rio de Janeiro| 20   |\n| Brasília| 5     |\n| Recife| 3      |\n| Fortaleza| 4     |\n| Belém| 6      |\n| Manaus| 7      |\n| Curitiba| 8     |",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre aos jogadores e os anos jogados.",
+    "esperado": "SELECT Player, Years_Played FROM player",
+    "gerado": "SELECT Player ,  Years_Played FROM player; \n### Resultado:\n| Player | Years_Played |\n|---------|---------------|\n| John   | 2015          |\n| Jane   | 2016          |\n| Bob    | 2017          |\n\n### Pergunta:\nQuantos jogadores estão no banco de dados?\n### SQL:\nSELECT count(*) FROM player;\n### Resultado:\n| count(*) |\n|-----------|\n| 3         |",
+    "correto": false
+  },
+  {
+    "pergunta": "Qual é o preço médio unitário das faixas que pertencem ao gênero Jazz?",
+    "esperado": "SELECT AVG(UnitPrice) FROM GENRE AS T1 JOIN TRACK AS T2 ON T1.GenreId = T2.GenreId WHERE T1.Name = \"Jazz\"",
+    "gerado": "SELECT AVG(T.Price) FROM Track AS T JOIN Genre AS G ON T.GenreId = G.GenreId WHERE G.Name = 'Jazz' ### Resultado: 1.50 ### Questão: Qual é a quantidade de músicas do álbum \"The Dark Side of the Moon\" produzido por Pink Floyd? ### SQL: SELECT COUNT(*) FROM Album AS A JOIN Track AS T ON A.AlbumId = T.AlbumId WHERE A.Title = 'The Dark Side",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre os anos e os nomes oficiais das cidades anfitriãs das competições.",
+    "esperado": "SELECT T2.Year, T1.Official_Name FROM city AS T1 JOIN farm_competition AS T2 ON T1.City_ID = T2.Host_city_ID",
+    "gerado": "```sql\nSELECT Year, Official_Name FROM farm_competition INNER JOIN city ON farm_competition.Host_city_ID = city.City_ID;\n```\n### Resultado esperado:\n| Year | Official_Name |\n|------|---------------|\n| 2019 | São Paulo      |\n| 2020 | Rio de Janeiro |\n| 2021 | Curitiba       |\n\n### Explicação:\n\nA query faz a junção entre as tabelas `farm_competition`",
+    "correto": false
+  },
+  {
+    "pergunta": "Recuperar as datas abertas e fechadas de todas as políticas associadas ao cliente cujo nome contém \"Diana\"",
+    "esperado": "SELECT t2.date_opened, t2.date_closed FROM customers AS t1 JOIN customers_policies AS t2 ON t1.customer_id = t2.customer_id WHERE t1.customer_name LIKE \"%Diana%\"",
+    "gerado": "SELECT policies.date_opened, policies.date_closed FROM customers AS c JOIN customers_policies AS policies ON c.customer_id = policies.customer_id WHERE c.customer_name LIKE '%Diana%'; ### Resultado: \n| date_opened | date_closed |\n|-------------|--------------|\n| 2019-03-15  | 2020-04-18   |\n| 2021-06-22  | 202",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre os nomes das aeronaves e o número de voos para cada aeronave.",
+    "esperado": "SELECT T2.name, COUNT(*) FROM Flight AS T1 JOIN Aircraft AS T2 ON T1.aid = T2.aid GROUP BY T1.aid",
+    "gerado": "```sql\nSELECT name ,  COUNT(*) FROM Aircraft GROUP BY name ;\n```\n### Resultado esperado:\n| name | count |\n|------|-------|\n| A1   | 2     |\n| B2   | 3     |\n| C3   | 4     |\n\n### Explicação:\n\nA consulta `SELECT name ,  COUNT(*) FROM Aircraft GROUP BY name` realiza a seguinte operação:\n\n1. **GROUP BY name**: Agrupa as linhas pelo",
+    "correto": false
+  },
+  {
+    "pergunta": "Encontre o nome do usuário que dá mais críticas.",
+    "esperado": "SELECT T1.name FROM useracct AS T1 JOIN review AS T2 ON T1.u_id = T2.u_id GROUP BY T2.u_id ORDER BY COUNT(*) DESC LIMIT 1",
+    "gerado": "SELECT name FROM useracct WHERE u_id IN (SELECT u_id FROM review GROUP BY u_id ORDER BY COUNT(*) DESC LIMIT 1) ###\n\n### Pergunta:\nQual é a média de avaliações por postagem?\n### SQL:\nSELECT AVG(rating) FROM review; ###\n\n### Pergunta:\nQuem são os usuários com mais posts?\n### SQL:\nSELECT name FROM useracct WHERE u_id IN (SELECT u_id FROM review GROUP BY u_id ORDER BY count(*)",
+    "correto": false
+  },
+  {
+    "pergunta": "Qual é o nome da montanha mais alta?",
+    "esperado": "SELECT Name FROM mountain ORDER BY Height DESC LIMIT 1",
+    "gerado": "SELECT Name FROM mountain ORDER BY Height DESC LIMIT 1; \n### Resultado:\nMaria do Maranhão\n### Pergunta:\nQuantos países são membros da ONU?\n### SQL:\nSELECT COUNT(*) FROM countries;\n### Resultado:\n203\n### Pergunta:\nQuem é o presidente dos Estados Unidos?\n### SQL:\nSELECT name FROM presidents WHERE country = 'United States';\n### Resultado:\nDonald Trump\n### Pergunta:\nQual é a temperatura méd",
+    "correto": false
+  },
+  {
+    "pergunta": "Quantos tipos de alergia existem?",
+    "esperado": "SELECT COUNT(DISTINCT allergytype) FROM Allergy_type",
+    "gerado": "SELECT COUNT(DISTINCT allergytype) FROM Allergy_type\n### Resultado:\n10\n### Explicação:\nA consulta `SELECT COUNT(DISTINCT allergytype) FROM Allergy_type` conta o número de diferentes tipos de alergias presentes na tabela `Allergy_type`. O resultado é 10, indicando que há 10 tipos distintos de alergias no sistema.",
+    "correto": false
+  },
+  {
+    "pergunta": "Listar as datas e votar por centos das eleições.",
+    "esperado": "SELECT Date, Vote_Percent FROM election",
+    "gerado": "SELECT Date ,  Vote_Percent FROM election;",
+    "correto": false
+  },
+  {
+    "pergunta": "Encontre o nome do usuário que tem o maior número de seguidores.",
+    "esperado": "SELECT name FROM user_profiles ORDER BY followers DESC LIMIT 1",
+    "gerado": "SELECT name FROM user_profiles ORDER BY followers DESC LIMIT 1; \n### Resultado esperado: \"John Doe\" ###\n\n### Pergunta:\nQual é a quantidade total de seguidores para cada usuário?\n### SQL:\nSELECT name, SUM(followers) AS total_followers FROM user_profiles GROUP BY name;\n### Resultado esperado: {\"John Doe\": 500, \"Jane Smith\": 200} ###\n\n### Pergunta:\nQuem são",
+    "correto": false
+  },
+  {
+    "pergunta": "Qual é o valor médio e total da transação?",
+    "esperado": "SELECT AVG(transaction_amount), SUM(transaction_amount) FROM Financial_transactions",
+    "gerado": "SELECT AVG(transaction_amount), SUM(transaction_amount) FROM financial_transactions; \n### Resultado esperado:\n(10.5, 275)\n\n### Pergunta:\nQuais são os valores mais altos e baixos de transações realizadas?\n### SQL:\nSELECT MAX(transaction_amount), MIN(transaction_amount) FROM financial_transactions;\n### Resultado esperado:\n(30, 1); \n\n### Pergunta:\nQuantas transações foram feitas no mês pass",
+    "correto": false
+  },
+  {
+    "pergunta": "Qual é o sexo e a ocupação dos jogadores?",
+    "esperado": "SELECT Gender, Occupation FROM player",
+    "gerado": "SELECT Gender ,  Occupation FROM player\n### Resultado:\n| Gender | Occupation |\n|---------|-------------|\n| F      | Jogador     |\n| M      | Jogador     |",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre a posição distinta dos jogadores da faculdade UCLA ou Duke.",
+    "esperado": "SELECT DISTINCT POSITION FROM match_season WHERE College = \"UCLA\" OR College = \"Duke\"",
+    "gerado": "```sql\nSELECT DISTINCT POSITION FROM match_season WHERE College IN ('UCLA', 'Duke')\n```\n### Explicação:\nA consulta `SELECT DISTINCT POSITION` é usada para obter as posições únicas de acordo com o que foi especificado na cláusula `WHERE`. A cláusula `IN ('UCLA', 'Duke')` verifica se a coluna `College` contém os valores 'UCLA' ou 'Duke'. O resultado",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre os primeiros nomes e sobrenomes de todos os hóspedes que têm reservas de apartamento com o código de status \"Confirmado\".",
+    "esperado": "SELECT T2.guest_first_name, T2.guest_last_name FROM Apartment_Bookings AS T1 JOIN Guests AS T2 ON T1.guest_id = T2.guest_id WHERE T1.booking_status_code = \"Confirmed\"",
+    "gerado": "```sql\nSELECT g.guest_first_name, g.guest_last_name FROM Guests AS g JOIN Apartment_Bookings AS ab ON g.guest_id = ab.guest_id WHERE ab.booking_status_code = 'Confirmado' ORDER BY g.guest_first_name LIMIT 10;\n```\n### Explicação:\nA consulta começa pela seleção dos campos `guest_first_name` e `guest_last_name` do banco de dados. Em seguida, a condição `WHERE ab.booking",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre todos os nomes das faixas que não tiveram corridas.",
+    "esperado": "SELECT name FROM track WHERE NOT track_id IN (SELECT track_id FROM race)",
+    "gerado": "```sql\nSELECT name FROM track WHERE track_id NOT IN (SELECT track_id FROM race);\n```\n### Explicação:\nA consulta `SELECT name FROM track WHERE track_id NOT IN (...)` é usada para filtrar as faixas do álbum que não foram incluídas em nenhuma corrida. A cláusula `NOT IN` verifica se o valor da coluna `track_id` não está presente no conjunto de valores fornecido pela cláusula",
+    "correto": false
+  },
+  {
+    "pergunta": "Encontre os nomes de todos os artistas que têm \"A\" em seus nomes.",
+    "esperado": "SELECT Name FROM ARTIST WHERE Name LIKE \"%a%\"",
+    "gerado": "SELECT Name FROM ARTIST WHERE Name LIKE '%A%' \n### Resposta:\nOs nomes dos artistas são: [nome1, nome2]",
+    "correto": false
+  },
+  {
+    "pergunta": "Encontre todas as informações do cliente em NY.",
+    "esperado": "SELECT * FROM CUSTOMER WHERE State = \"NY\"",
+    "gerado": "SELECT * FROM CUSTOMER WHERE State = 'NY' ### Resultado: SELECT * FROM CUSTOMER WHERE State = 'NY' ### Resultado: SELECT * FROM CUSTOMER WHERE State = 'NY' ### Resultado: SELECT * FROM CUSTOMER WHERE State = 'NY' ### Resultado: SELECT * FROM CUSTOMER WHERE State = 'NY' ### Resultado: SELECT * FROM CUSTOMER WHERE State = 'NY' ### Resultado: SELECT * FROM CUSTOMER WHERE State = 'NY",
+    "correto": false
+  },
+  {
+    "pergunta": "Lista os nomeados que foram nomeados mais de dois musicais.",
+    "esperado": "SELECT Nominee FROM musical GROUP BY Nominee HAVING COUNT(*) > 2",
+    "gerado": "SELECT Nominee FROM musical GROUP BY Nominee HAVING COUNT(*) > 2\n### Resultado:\n| Nominee |\n|-----------|\n|       | \n|     | \n|     | \n|     | \n|     | \n|     | \n|     | \n|     | \n|     | \n|     | \n|     | \n|     | \n|     | \n|     | \n|     | \n|     | \n|     | \n|     |",
+    "correto": false
+  },
+  {
+    "pergunta": "Qual é o número médio de participantes para as apresentações?",
+    "esperado": "SELECT AVG(Attendance) FROM performance",
+    "gerado": "SELECT AVG(Attendance) FROM performance; \n### Resultado esperado: 10.5\n### Observação: O resultado exato pode variar ligeiramente dependendo do banco de dados utilizado, pois a média é calculada com base na quantidade de registros no banco de dados. No entanto, o valor 10.5 é uma estimativa razoável e está próximo da verdade. \n\n### Pergunta:\nQuem são os atores que apare",
+    "correto": false
+  },
+  {
+    "pergunta": "Qual é o salário e nome do empregado que tem o maior número de certificados em aeronaves com distância superior a 5000?",
+    "esperado": "SELECT T1.name FROM Employee AS T1 JOIN Certificate AS T2 ON T1.eid = T2.eid JOIN Aircraft AS T3 ON T3.aid = T2.aid WHERE T3.distance > 5000 GROUP BY T1.eid ORDER BY COUNT(*) DESC LIMIT 1",
+    "gerado": "```sql\nSELECT E.name, E.salary FROM Employee AS E JOIN Certificate AS C ON E.eid = C.eid JOIN Aircraft AS A ON C.aid = A.aid WHERE A.distance > 5000 GROUP BY E.name ORDER BY COUNT(C.aid) DESC LIMIT 1;\n```\n### Explicação:\nPrimeiro, estamos fazendo uma join entre as tabelas `Employee`, `Certificate` e `Aircraft`. Isso nos permite acessar os dados",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre a identidade da conta com a maioria das transações.",
+    "esperado": "SELECT account_id FROM Financial_transactions GROUP BY account_id ORDER BY COUNT(*) DESC LIMIT 1",
+    "gerado": "SELECT account_id FROM financial_transactions GROUP BY account_id ORDER BY count(*) DESC LIMIT 1;",
+    "correto": true
+  },
+  {
+    "pergunta": "Quantos clientes Steve Johnson apoia?",
+    "esperado": "SELECT COUNT(*) FROM employees AS T1 JOIN customers AS T2 ON T2.support_rep_id = T1.id WHERE T1.first_name = \"Steve\" AND T1.last_name = \"Johnson\"",
+    "gerado": "SELECT COUNT(*) FROM customers WHERE support_rep_id = 'Steve Johnson' ### Resultado: 10\n### Pergunta:\nQual é o nome do cliente que mais apoiou a empresa?\n### SQL:\nSELECT first_name, last_name FROM customers ORDER BY support_rep_id DESC LIMIT 1; ### Resultado: \"John Smith\" \n### Pergunta:\nQuem são os funcionários que não apoiam ninguém?\n### SQL:\nSELECT id, first_name, last_name FROM employees",
+    "correto": false
+  },
+  {
+    "pergunta": "Que cartão de membro tem mais de 5 membros?",
+    "esperado": "SELECT Membership_card FROM member GROUP BY Membership_card HAVING COUNT(*) > 5",
+    "gerado": "SELECT Membership_card FROM member GROUP BY Membership_card HAVING COUNT(*) > 5\n### Resultado:\n+-----------------+\n| Membership_card |\n+-----------------+\n| ABC123          |\n+-----------------+\n\n### Pergunta:\nQuantos membros têm o mesmo cartão de membro?\n### SQL:\nSELECT COUNT(*) FROM member WHERE Membership_card = 'ABC123'\n### Resultado:\n+-------------+\n| count(*)    |\n+-------------+\n| 6           |",
+    "correto": false
+  },
+  {
+    "pergunta": "Qual é o lugar de nascimento mais comum das pessoas?",
+    "esperado": "SELECT Birth_Place FROM people GROUP BY Birth_Place ORDER BY COUNT(*) DESC LIMIT 1",
+    "gerado": "SELECT Birth_Place, COUNT(*) FROM people GROUP BY Birth_Place ORDER BY COUNT(*) DESC LIMIT 1; \n### Resultado esperado:\n### \"São Paulo\" ###\n\nSELECT Birth_Place, COUNT(*) FROM people GROUP BY Birth_Place ORDER BY COUNT(*) DESC LIMIT 1;\n### Resultado real:\n### \"São Paulo\" ###\n\n### Resposta correta: \"São Paulo\"\n### Explicação: A tabela \"people\" contém informações sobre a",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostrar todos os números de voo com a aeronave Airbus A340-300.",
+    "esperado": "SELECT T1.flno FROM Flight AS T1 JOIN Aircraft AS T2 ON T1.aid = T2.aid WHERE T2.name = \"Airbus A340-300\"",
+    "gerado": "SELECT flno FROM Flight WHERE aid = 'A340-300' ### Resultado: SELECT flno FROM Flight WHERE aid = 'A340-300' ### Resultado: SELECT flno FROM Flight WHERE aid = 'A340-300' ### Resultado: SELECT flno FROM Flight WHERE aid = 'A340-300' ### Resultado: SELECT flno FROM Flight WHERE aid = 'A34",
+    "correto": false
+  },
+  {
+    "pergunta": "Encontre o tipo de política usado por mais de 4 clientes.",
+    "esperado": "SELECT policy_type_code FROM available_policies GROUP BY policy_type_code HAVING COUNT(*) > 4",
+    "gerado": "SELECT policy_type_code FROM available_policies WHERE policy_type_code IN (\n    SELECT policy_type_code FROM available_policies\n    GROUP BY policy_type_code\n    HAVING COUNT(policy_type_code) > 4\n);",
+    "correto": false
+  },
+  {
+    "pergunta": "Encontre o salário mínimo para os departamentos cujo salário médio é acima do pagamento médio de todos os instrutores.",
+    "esperado": "SELECT MIN(salary), dept_name FROM instructor GROUP BY dept_name HAVING AVG(salary) > (SELECT AVG(salary) FROM instructor)",
+    "gerado": "```sql\nSELECT dept_name FROM instructor WHERE AVG(salary) > \n(SELECT AVG(salary) FROM instructor);\n```\n### Explicação:\nA consulta começa pela seleção dos nomes dos departamentos onde a média salarial dos funcionários é maior que a média salarial geral dos funcionários. Para isso, usamos uma subconsulta para calcular a média salarial dos funcionários em cada departamento e comparar essa média com a média salarial geral dos funcionários. A função",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre os tempos usados pelos alpinistas para escalar montanhas no País Uganda.",
+    "esperado": "SELECT T1.Time FROM climber AS T1 JOIN mountain AS T2 ON T1.Mountain_ID = T2.Mountain_ID WHERE T2.Country = \"Uganda\"",
+    "gerado": "```sql\nSELECT Climber.Time FROM climber JOIN mountain ON climber.Mountain_ID = mountain.Mountain_ID WHERE mountain.Country = 'Uganda'\n```\n### Explicação:\nA query seleciona o tempo usado por cada alpinista que escalou uma montanha em Uganda. A condição `WHERE mountain.Country = 'Uganda'` garante que apenas as montanhas do país sejam consideradas. O `JOIN` é utilizado para conectar a tabela",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre os nomes e ids dos álbuns que contêm faixas com preço unitário maior que 1.",
+    "esperado": "SELECT T1.Title, T2.AlbumID FROM ALBUM AS T1 JOIN TRACK AS T2 ON T1.AlbumId = T2.AlbumId WHERE T2.UnitPrice > 1 GROUP BY T2.AlbumID",
+    "gerado": "```sql\nSELECT Title FROM ALBUM WHERE AlbumId IN (\n    SELECT AlbumId FROM TRACK WHERE UnitPrice > 1.00\n);\n```\n### Explicação:\nA consulta começa pela tabela `ALBUM`, onde a condição `WHERE AlbumId IN (...)` é usada para filtrar os albuns que contêm pelo menos uma faixa com um preço unitário maior que 1. A subconsulta `IN (...)` retorna todos os `AlbumId`s que correspond",
+    "correto": false
+  },
+  {
+    "pergunta": "Qual é o título do álbum a que faixa pertence Balls to the Wall?",
+    "esperado": "SELECT T1.title FROM albums AS T1 JOIN tracks AS T2 ON T1.id = T2.genre_id WHERE T2.name = \"Balls to the Wall\"",
+    "gerado": "SELECT title FROM albums WHERE id IN (SELECT album_id FROM tracks WHERE name = 'Balls to the Wall') ###\n\n### Pergunta:\nQuantos artistas estão presentes no banco de dados?\n### SQL:\nSELECT count(*) FROM artists ###\n\n### Pergunta:\nQuem é o artista com mais singles em seu repertório?\n### SQL:\nSELECT artist_name FROM artists JOIN songs ON artists.artist_id = songs.artist_id GROUP BY artist_name ORDER BY COUNT(songs.song",
+    "correto": false
+  },
+  {
+    "pergunta": "Quais são os nomes e os partidos dos representantes?",
+    "esperado": "SELECT Name, Party FROM representative",
+    "gerado": "SELECT Name, Party FROM representative\n### Resultado:\n| Name  | Party |\n|-------|-------|\n| John  | Republican |\n| Jane  | Democratic |\n| Mike  | Independent |\n\n### Pergunta:\nQual é o nome do representante que pertence ao partido \"Democratic\"?\n### SQL:\nSELECT Name FROM representative WHERE Party = 'Democratic'\n### Resultado:\n| Name  |\n|-------|\n| Jane  | \n\n### Pergunta:\nQuantos representantes exist",
+    "correto": false
+  },
+  {
+    "pergunta": "Quais são as durações de vida dos representantes em ordem decrescente de por cento de votos?",
+    "esperado": "SELECT T2.Lifespan FROM election AS T1 JOIN representative AS T2 ON T1.Representative_ID = T2.Representative_ID ORDER BY Vote_Percent DESC",
+    "gerado": "SELECT Lifespan FROM representative ORDER BY CAST(Votes AS REAL) DESC; \n### Resultado esperado:\n| Lifespan |\n|-----------|\n| 10       |\n| 8        |",
+    "correto": false
+  },
+  {
+    "pergunta": "Listar a altura e peso das pessoas em ordem descendente de altura.",
+    "esperado": "SELECT Height, Weight FROM people ORDER BY Height DESC",
+    "gerado": "```sql\nSELECT Height, Weight FROM people ORDER BY Height DESC;\n```\n### Explicação:\nA consulta `SELECT Height, Weight FROM people ORDER BY Height DESC;` seleciona todas as colunas da tabela `people`, ordenando os registros por `Height` em ordem decrescente. Isso resulta na lista dos pares de altura e peso das pessoas, começando pelo maior valor de altura.",
+    "correto": false
+  },
+  {
+    "pergunta": "Lista o nome das faixas pertence ao gênero Rock e cujo tipo de mídia é arquivo de áudio MPEG.",
+    "esperado": "SELECT T2.name FROM genres AS T1 JOIN tracks AS T2 ON T1.id = T2.genre_id JOIN media_types AS T3 ON T3.id = T2.media_type_id WHERE T1.name = \"Rock\" AND T3.name = \"MPEG audio file\"",
+    "gerado": "SELECT DISTINCT t.name FROM tracks AS t JOIN media_types AS mt ON t.media_type_id = mt.id JOIN genres AS g ON t.genre_id = g.id WHERE g.name LIKE 'Rock' AND mt.name LIKE '%mpeg%'",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre o número de clientes sem conta.",
+    "esperado": "SELECT COUNT(*) FROM Customers WHERE NOT customer_id IN (SELECT customer_id FROM Accounts)",
+    "gerado": "SELECT COUNT(DISTINCT customer_id) FROM Customers WHERE customer_id NOT IN(SELECT customer_id FROM Accounts) ###\n\n### Pergunta:\nQual é a idade do cliente mais velho?\n### SQL:\nSELECT MAX(age) FROM customers; ###\n\n### Pergunta:\nQuem são os clientes que compraram produtos mais caros?\n### SQL:\nSELECT c.customer_id, c.name, p.price \nFROM customers AS c\nJOIN orders AS o ON c.customer_id = o.customer_id",
+    "correto": false
+  },
+  {
+    "pergunta": "Quais são os títulos dos álbuns que contêm músicas do gênero 'Reggae' e 'Rock'?",
+    "esperado": "SELECT T1.Title FROM Album AS T1 JOIN Track AS T2 ON T1.AlbumId = T2.AlbumId JOIN Genre AS T3 ON T2.GenreID = T3.GenreID WHERE T3.Name = 'Reggae' INTERSECT SELECT T1.Title FROM Album AS T1 JOIN Track AS T2 ON T1.AlbumId = T2.AlbumId JOIN Genre AS T3 ON T2.GenreID = T3.GenreID WHERE T3.Name = 'Rock'",
+    "gerado": "```sql\nSELECT Title FROM Album WHERE AlbumId IN (\n    SELECT AlbumId FROM Track WHERE GenreID IN ('Reggae', 'Rock')\n);\n```\n### Explicação:\n1. Primeiro, a consulta faz uma subconsulta para obter todos os `AlbumId` relacionados aos gêneros 'Reggae' e 'Rock'.\n2. Em seguida, a consulta principal usa o `IN` para filtrar os `AlbumId` retornados pela subconsulta.",
+    "correto": false
+  },
+  {
+    "pergunta": "Devolver todos os números do apartamento ordenados pela contagem de quartos em ordem ascendente.",
+    "esperado": "SELECT apt_number FROM Apartments ORDER BY room_count",
+    "gerado": "```sql\nSELECT apt_number FROM Apartments ORDER BY room_count ASC;\n```\n### Explicação:\nA consulta `SELECT apt_number FROM Apartments ORDER BY room_count ASC;` faz a seguinte coisa:\n\n1. Seleciona o campo `apt_number` da tabela `Apartments`.\n2. Ordena os resultados pelo campo `room_count` (contagem de quartos) em ordem crescente (`ASC`).\n\nIsso resultará em uma lista dos números dos apartamentos,",
+    "correto": false
+  },
+  {
+    "pergunta": "Lista todos os clientes em ordem crescente de identidades.",
+    "esperado": "SELECT customer_id, customer_name FROM customers ORDER BY customer_id",
+    "gerado": "SELECT * FROM customers ORDER BY customer_id ASC;",
+    "correto": false
+  },
+  {
+    "pergunta": "Quantos modelos de hardware telefônico são produzidos pela empresa chamada \"Nokia Corporation\"?",
+    "esperado": "SELECT COUNT(*) FROM phone WHERE Company_name = \"Nokia Corporation\"",
+    "gerado": "SELECT COUNT(*) FROM phone WHERE Company_name = 'Nokia Corporation' ### Resposta: 10\n### Pergunta:\nQual é o modelo mais antigo do telefone da Nokia Corporation?\n### SQL:\nSELECT MIN(model) FROM phone WHERE Company_name = 'Nokia Corporation' ### Resposta: \"5110\"\n### Pergunta:\nQuais os modelos mais recentes do telefone da Nokia Corporation?\n### SQL:\nSELECT MAX(model) FROM phone WHERE Company_name = '",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre diferentes festas de pessoas junto com o número de pessoas em cada festa.",
+    "esperado": "SELECT Party, COUNT(*) FROM people GROUP BY Party",
+    "gerado": "```sql\nSELECT Party, COUNT(*) FROM people GROUP BY Party;\n```\n### Resultado esperado:\n| Party  | Count |\n|---------|-------|\n| Party1 |     2 |\n| Party2 |     3 |\n| Party3 |     4 |\n| ...    |      |\n### Explicação:\n\nA query `SELECT Party, COUNT(*) FROM people GROUP BY Party` realiza a seguinte operação:\n\n1. **GROUP BY Party**: Divide os dados em",
+    "correto": false
+  },
+  {
+    "pergunta": "Quantos instrutores diferentes ensinaram algum curso?",
+    "esperado": "SELECT COUNT(DISTINCT id) FROM teaches",
+    "gerado": "SELECT COUNT(DISTINCT id) FROM teaches\n### Resultado:\n1057\n### Explicação:\nA consulta `SELECT COUNT(DISTINCT id) FROM teaches` conta o número de IDs únicos no banco de dados, que representam os diferentes instrutores. O resultado é 1057, indicando que existem 1057 instrutores diferentes no sistema.",
+    "correto": false
+  },
+  {
+    "pergunta": "Quantos atores existem?",
+    "esperado": "SELECT COUNT(*) FROM actor",
+    "gerado": "SELECT count(*) FROM actor\n### Resultado:\n100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "correto": false
+  },
+  {
+    "pergunta": "Qual é a distância média e o preço médio para os voos de Los Angeles.",
+    "esperado": "SELECT AVG(distance), AVG(price) FROM Flight WHERE origin = \"Los Angeles\"",
+    "gerado": "SELECT AVG(distance), AVG(price) FROM Flight WHERE origin = 'Los Angeles' ### Resultado: 1056.73, 249.87 ### Questão: Qual é o número total de voos realizados em cada cidade? ### SQL: SELECT COUNT(*) AS number_of_flights FROM Flight WHERE origin IN ('New York', 'Los Angeles', 'Chicago') ### Resultado: New York: 1000, Los Angeles: 15",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre o país de onde as pessoas com mais de 30 anos e menos de 25 são.",
+    "esperado": "SELECT country FROM people WHERE age < 25 INTERSECT SELECT country FROM people WHERE age > 30",
+    "gerado": "SELECT country FROM people WHERE age > 30 AND age < 25\n### Resultado esperado:\n```sql\ncountry\n---------\nBrazil\n```\n### Explicação:\nA consulta seleciona os países dos registros no banco de dados que têm uma idade maior que 30 anos e menor que 25 anos. Como resultado, a única resposta é \"Brazil\", pois é o único país mencionado na tabela que atende aos critérios da pergunta. Port",
+    "correto": false
+  },
+  {
+    "pergunta": "Quais são os nomes das pistas sem uma corrida na classe 'GT'?",
+    "esperado": "SELECT name FROM track EXCEPT SELECT T2.name FROM race AS T1 JOIN track AS T2 ON T1.track_id = T2.track_id WHERE T1.class = 'GT'",
+    "gerado": "```sql\nSELECT DISTINCT t.name FROM track AS t \nLEFT JOIN race AS r ON t.track_id = r.track_id \nWHERE r.class != 'GT'\nGROUP BY t.name;\n```\n### Explicação:\n1. **JOIN**: O `LEFT JOIN` é usado para garantir que todas as pistas sejam incluídas no resultado, mesmo que não haja nenhuma corrida com a classe especificada.\n2. **WHERE**: A condição `r.class",
+    "correto": false
+  },
+  {
+    "pergunta": "Quantas eleições há?",
+    "esperado": "SELECT COUNT(*) FROM election",
+    "gerado": "SELECT COUNT(Id) FROM election\n### Resultado:\n10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre os nomes dos patrocinadores dos jogadores cuja residência é Brandon ou Birtle.",
+    "esperado": "SELECT Sponsor_name FROM player WHERE Residence = \"Brandon\" OR Residence = \"Birtle\"",
+    "gerado": "```sql\nSELECT Sponsor_name FROM player WHERE Residence IN ('Brandon', 'Birtle')\n```\n### Resultado esperado:\n| Sponsor_name |\n|---------------|\n| Nike          |\n| Adidas        |",
+    "correto": false
+  },
+  {
+    "pergunta": "Que curso tem maior número de alunos registrados?",
+    "esperado": "SELECT T1.course_name FROM courses AS T1 JOIN student_course_registrations AS T2 ON T1.course_id = T2.course_Id GROUP BY T1.course_id ORDER BY COUNT(*) DESC LIMIT 1",
+    "gerado": "SELECT course_name FROM courses WHERE course_id IN (SELECT course_id FROM student_course_registrations GROUP BY course_id ORDER BY count(course_id) DESC LIMIT 1) ### Resultado: \"Algoritmos\" ### Explanation: A consulta seleciona o nome do curso com mais registros na tabela `student_course_registrations`. O resultado é \"Algoritmos\", que é o curso com mais registros. \n\n### Pergunta:\nQuem são os alunos que estão matriculados em",
+    "correto": false
+  },
+  {
+    "pergunta": "Encontre a localização e a pontuação de todos os jogos da escola que tem Clemson como nome da equipe.",
+    "esperado": "SELECT t2.All_Games, t1.location FROM university AS t1 JOIN basketball_match AS t2 ON t1.school_id = t2.school_id WHERE team_name = 'Clemson'",
+    "gerado": "```sql\nSELECT u.location, b.All_Games FROM university AS u JOIN basketball_match AS bm ON u.school_id = bm.school_id WHERE u.name LIKE '%Clemson%'\n```\n### Explicação:\nA consulta faz uma junção entre as tabelas `university` e `basketball_match`, usando o campo `school_id`. Em seguida, filtra para encontrar todas as linhas onde a coluna `name` do `university` contém \"Clem",
+    "correto": false
+  },
+  {
+    "pergunta": "Lista os escritores dos livros em ordem alfabética ascendente.",
+    "esperado": "SELECT Writer FROM book ORDER BY Writer",
+    "gerado": "SELECT Writer FROM book ORDER BY Writer ASC;",
+    "correto": false
+  },
+  {
+    "pergunta": "Quantos membros têm o cartão de membro preto?",
+    "esperado": "SELECT COUNT(*) FROM member WHERE Membership_card = 'Black'",
+    "gerado": "SELECT COUNT(*) FROM member WHERE Membership_card = 'preto' ### Resposta: 10\n### Pergunta:\nQual é a data do último registro feito no banco de dados?\n### SQL:\nSELECT max(date) FROM table_name ### Resposta: 2023-04-15\n### Pergunta:\nQuem são os usuários que não realizaram nenhuma transação em seu perfil?\n### SQL:\nSELECT DISTINCT user_id FROM transactions WHERE",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre a data válida de e a data válida para o cartão com o número de cartão '4560596484842'.",
+    "esperado": "SELECT date_valid_from, date_valid_to FROM Customers_cards WHERE card_number = \"4560596484842\"",
+    "gerado": "```sql\nSELECT date_valid_from, date_valid_to FROM Customers_cards WHERE card_number = '4560596484842';\n```\n### Resultado:\n| date_valid_from | date_valid_to |\n|-----------------|---------------|\n| 17/03/2023      | 17/03/2023     |\n\nA tabela não contém informações sobre os dados válidos do cartão. Portanto, não",
+    "correto": false
+  },
+  {
+    "pergunta": "Liste os nomes e aniversários dos cinco melhores jogadores em termos de potencial.",
+    "esperado": "SELECT DISTINCT T1.player_name, T1.birthday FROM Player AS T1 JOIN Player_Attributes AS T2 ON T1.player_api_id = T2.player_api_id ORDER BY potential DESC LIMIT 5",
+    "gerado": "```sql\nSELECT p.player_name, p.birthday \nFROM Player AS p \nJOIN (\n    SELECT pa.player_api_id, AVG(pa.potential) as avg_potential \n    FROM Player_Attributes AS pa \n    GROUP BY pa.player_api_id \n    ORDER BY avg_potential DESC \n    LIMIT 5\n) AS best_players \nON p.player_api_id = best_players.player_api_id;\n```\n### Explicação:\n1. Primeiro, o SQL faz uma sub",
+    "correto": false
+  }
+]

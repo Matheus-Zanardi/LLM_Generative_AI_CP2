@@ -1,0 +1,602 @@
+[
+  {
+    "pergunta": "Encontre o nome do item com a nota média mais baixa.",
+    "esperado": "SELECT T1.title FROM item AS T1 JOIN review AS T2 ON T1.i_id = T2.i_id GROUP BY T2.i_id ORDER BY AVG(T2.rating) LIMIT 1",
+    "gerado": "SELECT title FROM item WHERE NOT i_id IN (SELECT i_id FROM review GROUP BY i_id ORDER BY AVG(rating) LIMIT 1)",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre o nome e o país para todas as pessoas cuja idade é menor que a média.",
+    "esperado": "SELECT name, country FROM people WHERE age < (SELECT AVG(age) FROM people)",
+    "gerado": "SELECT name, country FROM people WHERE age < (SELECT AVG(age) FROM people)",
+    "correto": true
+  },
+  {
+    "pergunta": "Mostre os locais distintos dos debates.",
+    "esperado": "SELECT DISTINCT Venue FROM debate",
+    "gerado": "SELECT DISTINCT Venue FROM debate",
+    "correto": true
+  },
+  {
+    "pergunta": "Mostre todos os nomes do produto e a quantidade total pedida para cada nome do produto.",
+    "esperado": "SELECT T2.product_name, SUM(T1.product_quantity) FROM Order_items AS T1 JOIN Products AS T2 ON T1.product_id = T2.product_id GROUP BY T2.product_name",
+    "gerado": "SELECT T1.product_name, SUM(T2.quantity) FROM Products AS T1 JOIN Order_items AS T2 ON T1.product_id = T2.product_id GROUP BY T1.product_name",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre editoras que têm mais de uma publicação.",
+    "esperado": "SELECT Publisher FROM publication GROUP BY Publisher HAVING COUNT(*) > 1",
+    "gerado": "SELECT Publisher FROM publication GROUP BY Publisher HAVING COUNT(*) > 1",
+    "correto": true
+  },
+  {
+    "pergunta": "Devolver todos os jogadores ordenados por faculdade em ordem alfabética ascendente.",
+    "esperado": "SELECT player FROM match_season ORDER BY College",
+    "gerado": "SELECT player FROM match_season GROUP BY College ORDER BY College",
+    "correto": false
+  },
+  {
+    "pergunta": "Qual é a festa dos mais jovens?",
+    "esperado": "SELECT Party FROM people ORDER BY Age LIMIT 1",
+    "gerado": "SELECT Party FROM people ORDER BY Age LIMIT 1",
+    "correto": true
+  },
+  {
+    "pergunta": "Qual tipo de alergia tem menor número de alergias?",
+    "esperado": "SELECT allergytype FROM Allergy_type GROUP BY allergytype ORDER BY COUNT(*) LIMIT 1",
+    "gerado": "SELECT allergytype FROM Allergy_type GROUP BY allergytype ORDER BY COUNT(*) LIMIT 1",
+    "correto": true
+  },
+  {
+    "pergunta": "Mostre nomes de musicais que têm pelo menos três atores.",
+    "esperado": "SELECT T2.Name FROM actor AS T1 JOIN musical AS T2 ON T1.Musical_ID = T2.Musical_ID GROUP BY T1.Musical_ID HAVING COUNT(*) >= 3",
+    "gerado": "SELECT T2.Name FROM actor AS T1 JOIN musical AS T2 ON T1.Musical_ID = T2.Musical_ID GROUP BY T1.Musical_ID HAVING COUNT(*) >= 3",
+    "correto": true
+  },
+  {
+    "pergunta": "Encontrar o nome do departamento tem a maior quantidade de estudantes?",
+    "esperado": "SELECT dept_name FROM student GROUP BY dept_name ORDER BY COUNT(*) DESC LIMIT 1",
+    "gerado": "SELECT dept_name FROM student GROUP BY dept_name ORDER BY COUNT(*) DESC LIMIT 1",
+    "correto": true
+  },
+  {
+    "pergunta": "Mostre os nomes das montanhas com altura superior a 5000 ou proeminência superior a 1000.",
+    "esperado": "SELECT Name FROM mountain WHERE Height > 5000 OR Prominence > 1000",
+    "gerado": "SELECT Name FROM mountain WHERE Height > 5000 OR Prominence > 1000",
+    "correto": true
+  },
+  {
+    "pergunta": "Encontre os nomes dos usuários que não deixaram nenhuma crítica.",
+    "esperado": "SELECT name FROM useracct WHERE NOT u_id IN (SELECT u_id FROM review)",
+    "gerado": "SELECT name FROM useracct EXCEPT SELECT name FROM review",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre os números e classes de jogadores cujas posições são defensores.",
+    "esperado": "SELECT Draft_Pick_Number, Draft_Class FROM match_season WHERE POSITION = \"Defender\"",
+    "gerado": "SELECT DISTINCT [Draft_Pick_Number], [Draft_Class] FROM match_season WHERE POSITION = 'Defensive'",
+    "correto": false
+  },
+  {
+    "pergunta": "Listar o nome e residência dos jogadores cuja ocupação não é \"pesquisador\".",
+    "esperado": "SELECT Player_name, residence FROM player WHERE Occupation <> \"Researcher\"",
+    "gerado": "SELECT Player_name, residence FROM player WHERE NOT Occupation = 'researcher'",
+    "correto": false
+  },
+  {
+    "pergunta": "Quais são as identidades dos alunos que não têm alergias?",
+    "esperado": "SELECT StuID FROM Student EXCEPT SELECT StuID FROM Has_allergy",
+    "gerado": "SELECT StuID FROM Student EXCEPT SELECT T1.StuID FROM Has_allergy AS T1 JOIN Student AS T2 ON T1.StuID = T2.StuID",
+    "correto": false
+  },
+  {
+    "pergunta": "Encontre os nomes das equipes das universidades cujas inscrições são menores do que o tamanho médio das inscrições.",
+    "esperado": "SELECT t2.team_name FROM university AS t1 JOIN basketball_match AS t2 ON t1.school_id = t2.school_id WHERE enrollment < (SELECT AVG(enrollment) FROM university)",
+    "gerado": "SELECT t1.team_name FROM basketball_match AS t1 JOIN university AS t2 ON t1.school_id = t2.school_id WHERE t2.enrollment < (SELECT AVG(enrollment) FROM university)",
+    "correto": false
+  },
+  {
+    "pergunta": "Qual é o tipo de mídia menos comum em todas as faixas?",
+    "esperado": "SELECT T1.Name FROM MEDIATYPE AS T1 JOIN TRACK AS T2 ON T1.MediaTypeId = T2.MediaTypeId GROUP BY T2.MediaTypeId ORDER BY COUNT(*) LIMIT 1",
+    "gerado": "SELECT T2.Name FROM TRACK AS T1 JOIN MEDIATYPE AS T2 ON T1.MediaTypeId = T2.MediaTypeId GROUP BY T2.MediaTypeId ORDER BY COUNT(*) DESC LIMIT 1",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre todos os maiores e o número correspondente de alunos.",
+    "esperado": "SELECT major, COUNT(*) FROM Student GROUP BY major",
+    "gerado": "SELECT major, COUNT(*) FROM Student GROUP BY major",
+    "correto": true
+  },
+  {
+    "pergunta": "Encontrar diferentes cidades de endereço de estudantes?",
+    "esperado": "SELECT DISTINCT T1.city FROM addresses AS T1 JOIN people_addresses AS T2 ON T1.address_id = T2.address_id JOIN students AS T3 ON T2.person_id = T3.student_id",
+    "gerado": "SELECT DISTINCT t1.city FROM people_addresses AS t1 JOIN students AS t2 ON t1.person_id = t2.student_id WHERE t2.student_id IS NOT NULL",
+    "correto": false
+  },
+  {
+    "pergunta": "Liste a identidade dos alunos que registraram estatísticas de curso na ordem da data de inscrição.",
+    "esperado": "SELECT T2.student_id FROM courses AS T1 JOIN student_course_registrations AS T2 ON T1.course_id = T2.course_id WHERE T1.course_name = \"statistics\" ORDER BY T2.registration_date",
+    "gerado": "SELECT T1.student_id FROM student_course_registrations AS T1 JOIN courses AS T2 ON T1.course_id = T2.course_id ORDER BY T1.registration_date",
+    "correto": false
+  },
+  {
+    "pergunta": "Encontre os nomes de todos os instrutores que ensinaram algum curso e o curso.",
+    "esperado": "SELECT name, course_id FROM instructor AS T1 JOIN teaches AS T2 ON T1.ID = T2.ID",
+    "gerado": "SELECT T1.Name FROM instructor AS T1 JOIN teaches AS T2 ON T1.ID = T2.Instructor_ID",
+    "correto": false
+  },
+  {
+    "pergunta": "Lista a classe de corrida com pelo menos duas corridas.",
+    "esperado": "SELECT CLASS FROM race GROUP BY CLASS HAVING COUNT(*) >= 2",
+    "gerado": "SELECT CLASS FROM race GROUP BY CLASS HAVING COUNT(*) >= 2",
+    "correto": true
+  },
+  {
+    "pergunta": "Qual é o código postal em que a pressão média do nível do mar é a mais baixa?",
+    "esperado": "SELECT zip_code FROM weather GROUP BY zip_code ORDER BY AVG(mean_sea_level_pressure_inches) LIMIT 1",
+    "gerado": "SELECT zip_code FROM weather ORDER BY mean_sea_level_pressure_inches LIMIT 1",
+    "correto": false
+  },
+  {
+    "pergunta": "De quantos países são os alpinistas?",
+    "esperado": "SELECT COUNT(DISTINCT Country) FROM climber",
+    "gerado": "SELECT COUNT(DISTINCT Country) FROM climber",
+    "correto": true
+  },
+  {
+    "pergunta": "Encontre o título do curso que é fornecido pelos departamentos de Estatística e Psicologia.",
+    "esperado": "SELECT title FROM course WHERE dept_name = 'Statistics' INTERSECT SELECT title FROM course WHERE dept_name = 'Psychology'",
+    "gerado": "SELECT title FROM course WHERE dept_name = \"Statistics\" INTERSECT SELECT title FROM course WHERE dept_name = \"Psychology\"",
+    "correto": false
+  },
+  {
+    "pergunta": "Liste o ano de criação, nome e orçamento de cada departamento.",
+    "esperado": "SELECT creation, name, budget_in_billions FROM department",
+    "gerado": "SELECT creation, name, budget_in_billions FROM department",
+    "correto": true
+  },
+  {
+    "pergunta": "Lista os anfitriões de performances em ordem crescente de comparecimento.",
+    "esperado": "SELECT HOST FROM performance ORDER BY Attendance",
+    "gerado": "SELECT HOST FROM performance ORDER BY Attendance",
+    "correto": true
+  },
+  {
+    "pergunta": "Quais são os nomes dos estados onde pelo menos 3 cabeças nasceram?",
+    "esperado": "SELECT born_state FROM head GROUP BY born_state HAVING COUNT(*) >= 3",
+    "gerado": "SELECT born_state FROM head GROUP BY born_state HAVING COUNT(*) >= 3",
+    "correto": true
+  },
+  {
+    "pergunta": "Mostre o nome da conta, o id e o número de transações para cada conta.",
+    "esperado": "SELECT T2.account_name, T1.account_id, COUNT(*) FROM Financial_transactions AS T1 JOIN Accounts AS T2 ON T1.account_id = T2.account_id GROUP BY T1.account_id",
+    "gerado": "SELECT T2.account_name, T1.account_id, COUNT(*) FROM Financial_transactions AS T1 JOIN Accounts AS T2 ON T1.account_id = T2.account_id GROUP BY T1.account_id",
+    "correto": true
+  },
+  {
+    "pergunta": "Mostre os nomes dos alpinistas e as alturas das montanhas que eles escalam.",
+    "esperado": "SELECT T1.Name, T2.Height FROM climber AS T1 JOIN mountain AS T2 ON T1.Mountain_ID = T2.Mountain_ID",
+    "gerado": "SELECT T2.Name, T1.Height FROM mountain AS T1 JOIN climber AS T2 ON T1.Mountain_ID = T2.Mountain_ID",
+    "correto": false
+  },
+  {
+    "pergunta": "Encontre o número de celular dos candidatos cujo código de avaliação é \"Falho\"?",
+    "esperado": "SELECT T3.cell_mobile_number FROM candidates AS T1 JOIN candidate_assessments AS T2 ON T1.candidate_id = T2.candidate_id JOIN people AS T3 ON T1.candidate_id = T3.person_id WHERE T2.asessment_outcome_code = \"Fail\"",
+    "gerado": "SELECT COUNT(T1.cell_mobile_number) FROM people AS T1 JOIN candidate_assessments AS T2 ON T1.person_id = T2.candidate_id WHERE T2.asessment_outcome_code = 'Fail'",
+    "correto": false
+  },
+  {
+    "pergunta": "Qual é a matrícula máxima em todas as escolas?",
+    "esperado": "SELECT MAX(Enrollment) FROM university",
+    "gerado": "SELECT MAX(Enrollment) FROM university",
+    "correto": true
+  },
+  {
+    "pergunta": "Liste os clientes primeiro e sobrenome de 10 faturas menos caras.",
+    "esperado": "SELECT T1.first_name, T1.last_name FROM customers AS T1 JOIN invoices AS T2 ON T2.customer_id = T1.id ORDER BY total LIMIT 10",
+    "gerado": "SELECT first_name, last_name FROM customers WHERE NOT id IN (SELECT customer_id FROM invoices ORDER BY amount DESC LIMIT 10)",
+    "correto": false
+  },
+  {
+    "pergunta": "Lista todas as cidades em uma ordem decrescente da latitude mais alta de cada cidade.",
+    "esperado": "SELECT city FROM station GROUP BY city ORDER BY MAX(lat) DESC",
+    "gerado": "SELECT city FROM station ORDER BY lat DESC",
+    "correto": false
+  },
+  {
+    "pergunta": "Encontre os nomes e salários médios de todos os departamentos cujo salário médio é maior que 42000.",
+    "esperado": "SELECT dept_name, AVG(salary) FROM instructor GROUP BY dept_name HAVING AVG(salary) > 42000",
+    "gerado": "SELECT dept_name, AVG(salary) FROM instructor GROUP BY dept_name HAVING AVG(salary) > 42000",
+    "correto": true
+  },
+  {
+    "pergunta": "Mostre ids de ordem e a quantidade total em cada ordem.",
+    "esperado": "SELECT order_id, SUM(product_quantity) FROM Order_items GROUP BY order_id",
+    "gerado": "SELECT order_id, SUM(product_quantity) FROM Order_items GROUP BY order_id",
+    "correto": true
+  },
+  {
+    "pergunta": "Encontre a identidade do candidato cujo e-mail é Stanley.monahan@example.org?",
+    "esperado": "SELECT T2.candidate_id FROM people AS T1 JOIN candidates AS T2 ON T1.person_id = T2.candidate_id WHERE T1.email_address = \"stanley.monahan@example.org\"",
+    "gerado": "SELECT t1.candidate_id FROM candidates AS t1 JOIN people AS t2 ON t1.candidate_id = t2.person_id WHERE t2.email_address = \"Stanley.monahan@example.org\"",
+    "correto": false
+  },
+  {
+    "pergunta": "Encontre os títulos dos itens que receberam uma classificação superior a 8 e uma classificação inferior a 5.",
+    "esperado": "SELECT T1.title FROM item AS T1 JOIN review AS T2 ON T1.i_id = T2.i_id WHERE T2.rating > 8 INTERSECT SELECT T1.title FROM item AS T1 JOIN review AS T2 ON T1.i_id = T2.i_id WHERE T2.rating < 5",
+    "gerado": "SELECT title FROM item WHERE NOT i_id IN (SELECT i_id FROM review WHERE rating > 8) INTERSECT SELECT title FROM item WHERE NOT i_id IN (SELECT i_id FROM review WHERE rating < 5)",
+    "correto": false
+  },
+  {
+    "pergunta": "Liste o nome dos atores em ordem alfabética ascendente.",
+    "esperado": "SELECT Name FROM actor ORDER BY Name",
+    "gerado": "SELECT Name FROM actor ORDER BY Name",
+    "correto": true
+  },
+  {
+    "pergunta": "Mostre editores diferentes junto com o número de publicações que eles têm.",
+    "esperado": "SELECT Publisher, COUNT(*) FROM publication GROUP BY Publisher",
+    "gerado": "SELECT Publisher, COUNT(*) FROM publication GROUP BY Publisher",
+    "correto": true
+  },
+  {
+    "pergunta": "Mostre os jogadores e os anos jogados para os jogadores da equipe \"Columbus Crew\".",
+    "esperado": "SELECT T1.Player, T1.Years_Played FROM player AS T1 JOIN team AS T2 ON T1.Team = T2.Team_id WHERE T2.Name = \"Columbus Crew\"",
+    "gerado": "SELECT p.Player, t.Years_Played FROM player AS p JOIN team AS t ON p.Team = t.Team_id WHERE t.Name = \"Columbus Crew\"",
+    "correto": false
+  },
+  {
+    "pergunta": "O que são todos países distintos para artistas?",
+    "esperado": "SELECT DISTINCT country FROM artist",
+    "gerado": "SELECT DISTINCT country FROM artist",
+    "correto": true
+  },
+  {
+    "pergunta": "Quantos quartos tem o prédio Lamberton?",
+    "esperado": "SELECT COUNT(*) FROM classroom WHERE building = 'Lamberton'",
+    "gerado": "SELECT COUNT(*) FROM classroom WHERE building = \"Lambert\"",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre todos os países e o número de pessoas de cada país.",
+    "esperado": "SELECT country, COUNT(*) FROM people GROUP BY country",
+    "gerado": "SELECT country, COUNT(*) FROM people GROUP BY country",
+    "correto": true
+  },
+  {
+    "pergunta": "Quais são os nomes das equipes que não têm recorde de temporada?",
+    "esperado": "SELECT Name FROM team WHERE NOT Team_id IN (SELECT Team FROM match_season)",
+    "gerado": "SELECT Name FROM team WHERE NOT Team_id IN (SELECT Team_id FROM match_season)",
+    "correto": false
+  },
+  {
+    "pergunta": "Encontre os documentos e nomes das estações de onde pelo menos 200 viagens começaram.",
+    "esperado": "SELECT start_station_id, start_station_name FROM trip GROUP BY start_station_name HAVING COUNT(*) >= 200",
+    "gerado": "SELECT start_station_id, start_station_name FROM trip GROUP BY start_station_id HAVING COUNT(*) >= 200",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre diferentes locais e o número de performances em cada local.",
+    "esperado": "SELECT LOCATION, COUNT(*) FROM performance GROUP BY LOCATION",
+    "gerado": "SELECT LOCATION, COUNT(*) FROM performance GROUP BY LOCATION",
+    "correto": true
+  },
+  {
+    "pergunta": "Mostre aos jogadores e os anos jogados.",
+    "esperado": "SELECT Player, Years_Played FROM player",
+    "gerado": "SELECT Player, Years_Played FROM player",
+    "correto": true
+  },
+  {
+    "pergunta": "Qual é o preço médio unitário das faixas que pertencem ao gênero Jazz?",
+    "esperado": "SELECT AVG(UnitPrice) FROM GENRE AS T1 JOIN TRACK AS T2 ON T1.GenreId = T2.GenreId WHERE T1.Name = \"Jazz\"",
+    "gerado": "SELECT AVG(T1.Price) FROM TRACK AS T1 JOIN GENRE AS T2 ON T1.GenreId = T2.GenreId WHERE T2.Name = \"Jazz\"",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre os anos e os nomes oficiais das cidades anfitriãs das competições.",
+    "esperado": "SELECT T2.Year, T1.Official_Name FROM city AS T1 JOIN farm_competition AS T2 ON T1.City_ID = T2.Host_city_ID",
+    "gerado": "SELECT Year, Official_Name FROM city WHERE City_ID IN (SELECT Host_city_ID FROM farm_competition)",
+    "correto": false
+  },
+  {
+    "pergunta": "Recuperar as datas abertas e fechadas de todas as políticas associadas ao cliente cujo nome contém \"Diana\"",
+    "esperado": "SELECT t2.date_opened, t2.date_closed FROM customers AS t1 JOIN customers_policies AS t2 ON t1.customer_id = t2.customer_id WHERE t1.customer_name LIKE \"%Diana%\"",
+    "gerado": "SELECT T1.date_opened, T2.date_closed FROM customers AS T1 JOIN customers_policies AS T2 ON T1.customer_id = T2.customer_id WHERE T1.customer_name LIKE 'Diana'",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre os nomes das aeronaves e o número de voos para cada aeronave.",
+    "esperado": "SELECT T2.name, COUNT(*) FROM Flight AS T1 JOIN Aircraft AS T2 ON T1.aid = T2.aid GROUP BY T1.aid",
+    "gerado": "SELECT name, COUNT(*) FROM Aircraft WHERE aid IN (SELECT aid FROM Flight GROUP BY aid)",
+    "correto": false
+  },
+  {
+    "pergunta": "Encontre o nome do usuário que dá mais críticas.",
+    "esperado": "SELECT T1.name FROM useracct AS T1 JOIN review AS T2 ON T1.u_id = T2.u_id GROUP BY T2.u_id ORDER BY COUNT(*) DESC LIMIT 1",
+    "gerado": "SELECT name FROM useracct WHERE u_id IN (SELECT u_id FROM review GROUP BY u_id ORDER BY COUNT(*) DESC LIMIT 1)",
+    "correto": false
+  },
+  {
+    "pergunta": "Qual é o nome da montanha mais alta?",
+    "esperado": "SELECT Name FROM mountain ORDER BY Height DESC LIMIT 1",
+    "gerado": "SELECT Name FROM mountain ORDER BY Height DESC LIMIT 1",
+    "correto": true
+  },
+  {
+    "pergunta": "Quantos tipos de alergia existem?",
+    "esperado": "SELECT COUNT(DISTINCT allergytype) FROM Allergy_type",
+    "gerado": "SELECT COUNT(DISTINCT allergytype) FROM Allergy_type",
+    "correto": true
+  },
+  {
+    "pergunta": "Listar as datas e votar por centos das eleições.",
+    "esperado": "SELECT Date, Vote_Percent FROM election",
+    "gerado": "SELECT Date, Vote_Percent FROM election",
+    "correto": true
+  },
+  {
+    "pergunta": "Encontre o nome do usuário que tem o maior número de seguidores.",
+    "esperado": "SELECT name FROM user_profiles ORDER BY followers DESC LIMIT 1",
+    "gerado": "SELECT name FROM user_profiles ORDER BY followers DESC LIMIT 1",
+    "correto": true
+  },
+  {
+    "pergunta": "Qual é o valor médio e total da transação?",
+    "esperado": "SELECT AVG(transaction_amount), SUM(transaction_amount) FROM Financial_transactions",
+    "gerado": "SELECT AVG(transaction_amount), SUM(transaction_amount) FROM Financial_transactions",
+    "correto": true
+  },
+  {
+    "pergunta": "Qual é o sexo e a ocupação dos jogadores?",
+    "esperado": "SELECT Gender, Occupation FROM player",
+    "gerado": "SELECT Gender, Occupation FROM player",
+    "correto": true
+  },
+  {
+    "pergunta": "Mostre a posição distinta dos jogadores da faculdade UCLA ou Duke.",
+    "esperado": "SELECT DISTINCT POSITION FROM match_season WHERE College = \"UCLA\" OR College = \"Duke\"",
+    "gerado": "SELECT DISTINCT POSITION FROM match_season WHERE College = \"UCLA\" OR College = \"Duke\"",
+    "correto": true
+  },
+  {
+    "pergunta": "Mostre os primeiros nomes e sobrenomes de todos os hóspedes que têm reservas de apartamento com o código de status \"Confirmado\".",
+    "esperado": "SELECT T2.guest_first_name, T2.guest_last_name FROM Apartment_Bookings AS T1 JOIN Guests AS T2 ON T1.guest_id = T2.guest_id WHERE T1.booking_status_code = \"Confirmed\"",
+    "gerado": "SELECT T1.guest_first_name, T1.guest_last_name FROM Guests AS T1 JOIN Apartment_Bookings AS T2 ON T1.guest_id = T2.guest_id WHERE T2.booking_status_code = 'Confirmed'",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre todos os nomes das faixas que não tiveram corridas.",
+    "esperado": "SELECT name FROM track WHERE NOT track_id IN (SELECT track_id FROM race)",
+    "gerado": "SELECT name FROM track WHERE NOT track_id IN (SELECT track_id FROM race)",
+    "correto": true
+  },
+  {
+    "pergunta": "Encontre os nomes de todos os artistas que têm \"A\" em seus nomes.",
+    "esperado": "SELECT Name FROM ARTIST WHERE Name LIKE \"%a%\"",
+    "gerado": "SELECT Name FROM ARTIST WHERE Name LIKE \"%A%\"",
+    "correto": true
+  },
+  {
+    "pergunta": "Encontre todas as informações do cliente em NY.",
+    "esperado": "SELECT * FROM CUSTOMER WHERE State = \"NY\"",
+    "gerado": "SELECT * FROM CUSTOMER WHERE State = \"NY\"",
+    "correto": true
+  },
+  {
+    "pergunta": "Lista os nomeados que foram nomeados mais de dois musicais.",
+    "esperado": "SELECT Nominee FROM musical GROUP BY Nominee HAVING COUNT(*) > 2",
+    "gerado": "SELECT Nominee FROM musical GROUP BY Nominee HAVING COUNT(*) > 2",
+    "correto": true
+  },
+  {
+    "pergunta": "Qual é o número médio de participantes para as apresentações?",
+    "esperado": "SELECT AVG(Attendance) FROM performance",
+    "gerado": "SELECT AVG(Attendance) FROM performance",
+    "correto": true
+  },
+  {
+    "pergunta": "Qual é o salário e nome do empregado que tem o maior número de certificados em aeronaves com distância superior a 5000?",
+    "esperado": "SELECT T1.name FROM Employee AS T1 JOIN Certificate AS T2 ON T1.eid = T2.eid JOIN Aircraft AS T3 ON T3.aid = T2.aid WHERE T3.distance > 5000 GROUP BY T1.eid ORDER BY COUNT(*) DESC LIMIT 1",
+    "gerado": "SELECT E1.name, E1.eid FROM Employee AS E1 JOIN Certificate AS C1 ON E1.eid = C1.eid JOIN Aircraft AS A2 ON C1.aid = A2.aid WHERE A2.distance > 5000 GROUP BY E1.eid ORDER BY COUNT(*) DESC LIMIT 1",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre a identidade da conta com a maioria das transações.",
+    "esperado": "SELECT account_id FROM Financial_transactions GROUP BY account_id ORDER BY COUNT(*) DESC LIMIT 1",
+    "gerado": "SELECT account_id FROM Financial_transactions GROUP BY account_id ORDER BY COUNT(*) DESC LIMIT 1",
+    "correto": true
+  },
+  {
+    "pergunta": "Quantos clientes Steve Johnson apoia?",
+    "esperado": "SELECT COUNT(*) FROM employees AS T1 JOIN customers AS T2 ON T2.support_rep_id = T1.id WHERE T1.first_name = \"Steve\" AND T1.last_name = \"Johnson\"",
+    "gerado": "SELECT COUNT(*) FROM customers AS T1 JOIN employees AS T2 ON T1.support_rep_id = T2.id WHERE T2.first_name = \"Steve\" AND T2.last_name = \"Johnson\"",
+    "correto": false
+  },
+  {
+    "pergunta": "Que cartão de membro tem mais de 5 membros?",
+    "esperado": "SELECT Membership_card FROM member GROUP BY Membership_card HAVING COUNT(*) > 5",
+    "gerado": "SELECT Membership_card FROM member GROUP BY Membership_card HAVING COUNT(*) > 5",
+    "correto": true
+  },
+  {
+    "pergunta": "Qual é o lugar de nascimento mais comum das pessoas?",
+    "esperado": "SELECT Birth_Place FROM people GROUP BY Birth_Place ORDER BY COUNT(*) DESC LIMIT 1",
+    "gerado": "SELECT Birth_Place FROM people GROUP BY Birth_Place ORDER BY COUNT(*) DESC LIMIT 1",
+    "correto": true
+  },
+  {
+    "pergunta": "Mostrar todos os números de voo com a aeronave Airbus A340-300.",
+    "esperado": "SELECT T1.flno FROM Flight AS T1 JOIN Aircraft AS T2 ON T1.aid = T2.aid WHERE T2.name = \"Airbus A340-300\"",
+    "gerado": "SELECT flno FROM Flight WHERE aid = (SELECT aid FROM Aircraft WHERE name = \"Airbus A340-300\")",
+    "correto": false
+  },
+  {
+    "pergunta": "Encontre o tipo de política usado por mais de 4 clientes.",
+    "esperado": "SELECT policy_type_code FROM available_policies GROUP BY policy_type_code HAVING COUNT(*) > 4",
+    "gerado": "SELECT policy_type_code FROM available_policies GROUP BY policy_type_code HAVING COUNT(*) > 4",
+    "correto": true
+  },
+  {
+    "pergunta": "Encontre o salário mínimo para os departamentos cujo salário médio é acima do pagamento médio de todos os instrutores.",
+    "esperado": "SELECT MIN(salary), dept_name FROM instructor GROUP BY dept_name HAVING AVG(salary) > (SELECT AVG(salary) FROM instructor)",
+    "gerado": "SELECT dept_name FROM instructor GROUP BY dept_name HAVING AVG(salary) > (SELECT AVG(salary) FROM instructor)",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre os tempos usados pelos alpinistas para escalar montanhas no País Uganda.",
+    "esperado": "SELECT T1.Time FROM climber AS T1 JOIN mountain AS T2 ON T1.Mountain_ID = T2.Mountain_ID WHERE T2.Country = \"Uganda\"",
+    "gerado": "SELECT T2.Time FROM mountain AS T1 JOIN climber AS T2 ON T1.Mountain_ID = T2.Mountain_ID WHERE T1.Country = \"Uganda\"",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre os nomes e ids dos álbuns que contêm faixas com preço unitário maior que 1.",
+    "esperado": "SELECT T1.Title, T2.AlbumID FROM ALBUM AS T1 JOIN TRACK AS T2 ON T1.AlbumId = T2.AlbumId WHERE T2.UnitPrice > 1 GROUP BY T2.AlbumID",
+    "gerado": "SELECT Title FROM ALBUM WHERE AlbumId IN (SELECT AlbumId FROM TRACK WHERE UnitPrice > 1)",
+    "correto": false
+  },
+  {
+    "pergunta": "Qual é o título do álbum a que faixa pertence Balls to the Wall?",
+    "esperado": "SELECT T1.title FROM albums AS T1 JOIN tracks AS T2 ON T1.id = T2.genre_id WHERE T2.name = \"Balls to the Wall\"",
+    "gerado": "SELECT T2.title FROM tracks AS T1 JOIN albums AS T2 ON T1.genre_id = T2.id WHERE T1.name = \"Balls to the Wall\"",
+    "correto": false
+  },
+  {
+    "pergunta": "Quais são os nomes e os partidos dos representantes?",
+    "esperado": "SELECT Name, Party FROM representative",
+    "gerado": "SELECT Name, Party FROM representative",
+    "correto": true
+  },
+  {
+    "pergunta": "Quais são as durações de vida dos representantes em ordem decrescente de por cento de votos?",
+    "esperado": "SELECT T2.Lifespan FROM election AS T1 JOIN representative AS T2 ON T1.Representative_ID = T2.Representative_ID ORDER BY Vote_Percent DESC",
+    "gerado": "SELECT Lifespan FROM representative WHERE Representative_ID IN (SELECT Representative_ID FROM election ORDER BY Votes DESC LIMIT 1)",
+    "correto": false
+  },
+  {
+    "pergunta": "Listar a altura e peso das pessoas em ordem descendente de altura.",
+    "esperado": "SELECT Height, Weight FROM people ORDER BY Height DESC",
+    "gerado": "SELECT Height, Weight FROM people ORDER BY Height DESC",
+    "correto": true
+  },
+  {
+    "pergunta": "Lista o nome das faixas pertence ao gênero Rock e cujo tipo de mídia é arquivo de áudio MPEG.",
+    "esperado": "SELECT T2.name FROM genres AS T1 JOIN tracks AS T2 ON T1.id = T2.genre_id JOIN media_types AS T3 ON T3.id = T2.media_type_id WHERE T1.name = \"Rock\" AND T3.name = \"MPEG audio file\"",
+    "gerado": "SELECT T1.name FROM tracks AS T1 JOIN media_types AS T2 ON T1.media_type_id = T2.id WHERE T1.genre_id IN (SELECT id FROM genres WHERE name = \"Rock\") AND T2.name = \"Audio file\"",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre o número de clientes sem conta.",
+    "esperado": "SELECT COUNT(*) FROM Customers WHERE NOT customer_id IN (SELECT customer_id FROM Accounts)",
+    "gerado": "SELECT COUNT(*) FROM Customers WHERE NOT customer_id IN (SELECT customer_id FROM Accounts)",
+    "correto": true
+  },
+  {
+    "pergunta": "Quais são os títulos dos álbuns que contêm músicas do gênero 'Reggae' e 'Rock'?",
+    "esperado": "SELECT T1.Title FROM Album AS T1 JOIN Track AS T2 ON T1.AlbumId = T2.AlbumId JOIN Genre AS T3 ON T2.GenreID = T3.GenreID WHERE T3.Name = 'Reggae' INTERSECT SELECT T1.Title FROM Album AS T1 JOIN Track AS T2 ON T1.AlbumId = T2.AlbumId JOIN Genre AS T3 ON T2.GenreID = T3.GenreID WHERE T3.Name = 'Rock'",
+    "gerado": "SELECT T1.Title FROM Album AS T1 JOIN Track AS T2 ON T1.AlbumId = T2.AlbumId JOIN Genre AS T3 ON T2.GenreID = T3.GenreID WHERE T3.Name = 'Reggae' INTERSECT SELECT T1.Title FROM Album AS T1 JOIN Track AS T2 ON T1.AlbumId = T2.AlbumId JOIN Genre AS T3 ON T2.GenreID = T3.GenreID WHERE T",
+    "correto": false
+  },
+  {
+    "pergunta": "Devolver todos os números do apartamento ordenados pela contagem de quartos em ordem ascendente.",
+    "esperado": "SELECT apt_number FROM Apartments ORDER BY room_count",
+    "gerado": "SELECT apt_number FROM Apartments ORDER BY room_count",
+    "correto": true
+  },
+  {
+    "pergunta": "Lista todos os clientes em ordem crescente de identidades.",
+    "esperado": "SELECT customer_id, customer_name FROM customers ORDER BY customer_id",
+    "gerado": "SELECT customer_id, customer_name FROM customers ORDER BY customer_id",
+    "correto": true
+  },
+  {
+    "pergunta": "Quantos modelos de hardware telefônico são produzidos pela empresa chamada \"Nokia Corporation\"?",
+    "esperado": "SELECT COUNT(*) FROM phone WHERE Company_name = \"Nokia Corporation\"",
+    "gerado": "SELECT COUNT(*) FROM phone WHERE Company_name = \"Nokia Corporation\"",
+    "correto": true
+  },
+  {
+    "pergunta": "Mostre diferentes festas de pessoas junto com o número de pessoas em cada festa.",
+    "esperado": "SELECT Party, COUNT(*) FROM people GROUP BY Party",
+    "gerado": "SELECT Party, COUNT(*) FROM people GROUP BY Party",
+    "correto": true
+  },
+  {
+    "pergunta": "Quantos instrutores diferentes ensinaram algum curso?",
+    "esperado": "SELECT COUNT(DISTINCT id) FROM teaches",
+    "gerado": "SELECT COUNT(DISTINCT id) FROM teaches",
+    "correto": true
+  },
+  {
+    "pergunta": "Quantos atores existem?",
+    "esperado": "SELECT COUNT(*) FROM actor",
+    "gerado": "SELECT COUNT(*) FROM actor",
+    "correto": true
+  },
+  {
+    "pergunta": "Qual é a distância média e o preço médio para os voos de Los Angeles.",
+    "esperado": "SELECT AVG(distance), AVG(price) FROM Flight WHERE origin = \"Los Angeles\"",
+    "gerado": "SELECT AVG(distance), AVG(price) FROM Flight WHERE origin = \"Los Angeles\"",
+    "correto": true
+  },
+  {
+    "pergunta": "Mostre o país de onde as pessoas com mais de 30 anos e menos de 25 são.",
+    "esperado": "SELECT country FROM people WHERE age < 25 INTERSECT SELECT country FROM people WHERE age > 30",
+    "gerado": "SELECT country FROM people WHERE age > 30 INTERSECT SELECT country FROM people WHERE age < 25",
+    "correto": false
+  },
+  {
+    "pergunta": "Quais são os nomes das pistas sem uma corrida na classe 'GT'?",
+    "esperado": "SELECT name FROM track EXCEPT SELECT T2.name FROM race AS T1 JOIN track AS T2 ON T1.track_id = T2.track_id WHERE T1.class = 'GT'",
+    "gerado": "SELECT name FROM track EXCEPT SELECT t1.name FROM track AS t1 JOIN race AS t2 ON t1.track_id = t2.track_id WHERE t2.class = \"GT\"",
+    "correto": false
+  },
+  {
+    "pergunta": "Quantas eleições há?",
+    "esperado": "SELECT COUNT(*) FROM election",
+    "gerado": "SELECT COUNT(*) FROM election",
+    "correto": true
+  },
+  {
+    "pergunta": "Mostre os nomes dos patrocinadores dos jogadores cuja residência é Brandon ou Birtle.",
+    "esperado": "SELECT Sponsor_name FROM player WHERE Residence = \"Brandon\" OR Residence = \"Birtle\"",
+    "gerado": "SELECT Sponsor_name FROM player WHERE Residence = \"Brandon\" OR Residence = \"Birtle\"",
+    "correto": true
+  },
+  {
+    "pergunta": "Que curso tem maior número de alunos registrados?",
+    "esperado": "SELECT T1.course_name FROM courses AS T1 JOIN student_course_registrations AS T2 ON T1.course_id = T2.course_Id GROUP BY T1.course_id ORDER BY COUNT(*) DESC LIMIT 1",
+    "gerado": "SELECT course_name FROM courses WHERE course_id IN (SELECT courseId FROM student_course_registrations GROUP BY courseId ORDER BY COUNT(*) DESC LIMIT 1)",
+    "correto": false
+  },
+  {
+    "pergunta": "Encontre a localização e a pontuação de todos os jogos da escola que tem Clemson como nome da equipe.",
+    "esperado": "SELECT t2.All_Games, t1.location FROM university AS t1 JOIN basketball_match AS t2 ON t1.school_id = t2.school_id WHERE team_name = 'Clemson'",
+    "gerado": "SELECT T2.location, T1.All_Games FROM university AS T1 JOIN basketball_match AS T2 ON T1.school_id = T2.school_id WHERE T1.name LIKE \"Clemson%\"",
+    "correto": false
+  },
+  {
+    "pergunta": "Lista os escritores dos livros em ordem alfabética ascendente.",
+    "esperado": "SELECT Writer FROM book ORDER BY Writer",
+    "gerado": "SELECT Writer FROM book ORDER BY Writer",
+    "correto": true
+  },
+  {
+    "pergunta": "Quantos membros têm o cartão de membro preto?",
+    "esperado": "SELECT COUNT(*) FROM member WHERE Membership_card = 'Black'",
+    "gerado": "SELECT COUNT(*) FROM member WHERE Membership_card = \"Black\"",
+    "correto": false
+  },
+  {
+    "pergunta": "Mostre a data válida de e a data válida para o cartão com o número de cartão '4560596484842'.",
+    "esperado": "SELECT date_valid_from, date_valid_to FROM Customers_cards WHERE card_number = \"4560596484842\"",
+    "gerado": "SELECT date_valid_from, date_valid_to FROM Customers_cards WHERE card_number = '4560596484842'",
+    "correto": false
+  },
+  {
+    "pergunta": "Liste os nomes e aniversários dos cinco melhores jogadores em termos de potencial.",
+    "esperado": "SELECT DISTINCT T1.player_name, T1.birthday FROM Player AS T1 JOIN Player_Attributes AS T2 ON T1.player_api_id = T2.player_api_id ORDER BY potential DESC LIMIT 5",
+    "gerado": "SELECT T2.player_name, T2.birthday FROM Player AS T1 JOIN Player_Attributes AS T3 ON T1.player_api_id = T3.player_api_id ORDER BY T1.potential DESC LIMIT 5",
+    "correto": false
+  }
+]
