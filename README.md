@@ -89,7 +89,14 @@ Quais são os funcionários do departamento de TI?
 SELECT * FROM funcionarios WHERE departamento = 'TI';
 ```
 
-O dataset foi separado em dados de treinamento e teste.
+O dataset completo contém **1.000 exemplos** de pares pergunta–SQL.
+
+Para o treinamento e avaliação, os dados foram divididos utilizando `train_test_split` com `test_size=0.1` e `seed=42`, garantindo um split reproduzível:
+
+- **900 exemplos (90%)** utilizados no treinamento;
+- **100 exemplos (10%)** reservados exclusivamente para avaliação.
+
+O conjunto de teste foi salvo no arquivo `teste.jsonl` e utilizado para comparar o desempenho do modelo base com os modelos após o fine-tuning.
 
 ## Experimentos
 
