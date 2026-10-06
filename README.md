@@ -1,5 +1,12 @@
 # Gerador de SQL com LLM Local
 
+## Integrantes do Grupo
+- Augusto Fisco Milreu - RM98245
+- David Denunci - RM98603
+- Fernando Popolili - RM99919
+- Matheus Zanardi - RM98832
+- Lucas Palamartschuk de Toledo - RM97913
+
 Projeto desenvolvido para o **CP2/CP3 - Generative AI for Engineering**, com o objetivo de realizar fine-tuning de uma LLM local utilizando GPU e disponibilizar o modelo por meio de uma interface gráfica.
 
 ## Objetivo
